@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
                   Column(
                     mainAxisAlignment:  MainAxisAlignment.center,
                     children: <Widget> [
-                      Text('SIMPLE'),
+                      Text('심플'),
                       SizedBox(height:10),
                       RaisedButton(
                           child:Text('anonymous log in'),

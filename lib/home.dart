@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import 'appState/app_state.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,7 +17,21 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('게시판 목록'),
+      ),
+      body: ListView(
+        children: [
+          Text('homepage!'),
+          FloatingActionButton(
+            child: Icon(
+              Icons.exit_to_app,
+            ),
+            onPressed: () {
+              Provider.of<ApplicationState>(context, listen: false).signOut();
+              Navigator.popAndPushNamed(context, '/login');
+            },
+          ),
+        ],
       ),
     );
   }
