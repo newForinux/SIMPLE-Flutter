@@ -24,6 +24,14 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment:  MainAxisAlignment.center,
                     children: <Widget> [
                       Text('SIMPLE'),
+                      SizedBox(height:10),
+                      RaisedButton(
+                          child:Text('anonymous log in'),
+                          onPressed: () async {
+                            Provider.of<ApplicationState>(context, listen: false).signInAnonymously();
+                            await Navigator.popAndPushNamed(context, '/home');
+                          }
+                      ),
                     ],
                   ),
                 ],

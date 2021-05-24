@@ -12,6 +12,10 @@ class ApplicationState extends ChangeNotifier {
   }
 
   Future<void> init() async {
+    await Firebase.initializeApp();
+  }
 
+  Future<void> signInAnonymously() async {
+    final UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'home.dart';
 import 'login.dart';
 
 
@@ -17,11 +18,11 @@ class MyApp extends StatelessWidget {
             title: TextStyle(color: Colors.black),
           )
       ),
-      title: 'Shrine shopping',
+      title: 'SIMPLE flutter',
       initialRoute: '/login',
       routes: {
         '/login' : (context) => LoginPage(),
-        //'/home' : (context) => HomePage(),
+        '/home' : (context) => HomePage(),
         //'/add' : (context) => AddPage(),
         //'/profile' : (context) => ProfilePage(),
         //'/detail' : (context) => DetailPage(),
