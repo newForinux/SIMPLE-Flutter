@@ -23,14 +23,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cloud_firestore:
-  firebase_core:
-  firebase_auth:
-  google_sign_in:
-  firebase_storage:
-  image_picker:
+  cloud_firestore: ^1.0.0 # new
+  firebase_core: "^1.1.0"
+  firebase_auth: ^1.0.0   # new
+  google_sign_in: ^5.0.0-nullsafety
+  firebase_storage: "^8.0.5"
+  image_picker: ^0.7.4
   google_fonts: ^2.0.0
-  provider:
+  provider: ^5.0.0        # new
 
 
 

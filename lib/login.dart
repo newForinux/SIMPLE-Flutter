@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
               child: ElevatedButton(
                 onPressed: () {
                   signInWithGoogle().then((UserCredential userCredential) {
-                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/home');
                   });
                 },
                 style: ButtonStyle(
