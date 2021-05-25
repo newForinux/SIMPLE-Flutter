@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-
-import 'appState/app_state.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -13,6 +9,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  void _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,10 +28,7 @@ class _HomePageState extends State<HomePage> {
             child: Icon(
               Icons.exit_to_app,
             ),
-            onPressed: () {
-              Provider.of<ApplicationState>(context, listen: false).signOut();
-              Navigator.popAndPushNamed(context, '/login');
-            },
+            onPressed: _signOut,
           ),
         ],
       ),
