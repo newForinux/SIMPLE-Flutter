@@ -1,14 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class AddPage extends StatefulWidget {
+class UpdatePage extends StatefulWidget {
   @override
-  _AddPageState createState() => _AddPageState();
+  _UpdatePageState createState() => _UpdatePageState();
 }
 
-class _AddPageState extends State<AddPage> {
+class _UpdatePageState extends State<UpdatePage> {
 
   final CollectionReference errands = FirebaseFirestore.instance.collection('errands');
   var user = FirebaseAuth.instance.currentUser;
@@ -21,14 +22,15 @@ class _AddPageState extends State<AddPage> {
   final _rewardController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  Future<void> addCard() {
-    return errands.doc(user!.uid).set({
+  Future<void> updateCard() {
+
+    return errands.doc(user!.uid).update({
       'category':_selectedCategory,
       'title': _titleController.text,
       'description':_descriptionController.text,
       'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
-      'userId': user!.uid,
-      'timestamp': FieldValue.serverTimestamp(),
+      //'userId': user!.uid,
+      //'timestamp': FieldValue.serverTimestamp(),
 
     })
         .then((value) => print("Added"))
@@ -37,26 +39,23 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
+    final args_fromDetail = ModalRoute.of(context)!.settings.arguments as DocumentSnapshot;
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.cancel),
-          onPressed: () => Navigator.pushNamed(context, '/home'),
-        ),
-        title: Text('Add'),
+        title: Text('게시물 수정'),
         actions: [
           TextButton(
-            child: Text('SAVE'),
-            onPressed: () async {
-              if (_titleFormkey.currentState!.validate()) {
-                await addCard();
-                Navigator.pushNamed(context, '/home');
-              } else {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Processing Data'),));
+              child: Text('SAVE'),
+              onPressed: () async {
+                if (_titleFormkey.currentState!.validate()) {
+                  await updateCard();
+                  Navigator.pushNamed(context, '/home');
+                } else {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data'),));
+                }
               }
-            }
           )
         ],
       ),
@@ -71,12 +70,12 @@ class _AddPageState extends State<AddPage> {
               child: DropdownButton(
                 value: _selectedCategory,
                 items: _valueList.map(
-                    (value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
-                      );
-                    },
+                      (value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Text(value),
+                    );
+                  },
                 ).toList(),
                 onChanged: (value) {
                   setState(() {
@@ -97,7 +96,7 @@ class _AddPageState extends State<AddPage> {
               child: TextFormField(
                 controller: _titleController,
                 decoration: InputDecoration(
-                  hintText: '제목: ',
+                  hintText: args_fromDetail.data()!['title'],
                   hintStyle: TextStyle(fontWeight: FontWeight.bold,),
                 ),
                 validator: (value) {
@@ -113,7 +112,7 @@ class _AddPageState extends State<AddPage> {
               child: TextField(
                 controller: _descriptionController,
                 decoration: InputDecoration(
-                  hintText: '내용을 입력하세요: (시간, 장소, 진행 방식 등)',
+                  hintText: args_fromDetail.data()!['description'],
                 ),
                 maxLines: null,
               ),
@@ -124,7 +123,7 @@ class _AddPageState extends State<AddPage> {
                   child: TextField(
                     controller: _rewardController,
                     decoration: InputDecoration(
-                      hintText: '심부름 값:',
+                      hintText: args_fromDetail.data()!['reward'].toString(),
                     ),
                     textAlign: TextAlign.right,
                     keyboardType: TextInputType.number,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_flutter/update.dart';
 
 import 'add.dart';
 import 'detail.dart';
@@ -29,7 +30,7 @@ class SimpleApp extends StatelessWidget {
         '/add' : (context) => AddPage(),
         //'/profile' : (context) => ProfilePage(),
         '/detail' : (context) => DetailPage(),
-        //'/update' : (context) => UpdatePage(),
+        '/update' : (context) => UpdatePage(),
       },
 
       onGenerateRoute: _getRoute,

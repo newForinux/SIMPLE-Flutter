@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  var user = FirebaseAuth.instance.currentUser;
   void _signOut() async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamed(context, '/login');
@@ -23,20 +24,18 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('게시판 목록'),
+        title: Text('게시판 목록 (HOME) '),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.popAndPushNamed(context, '/add');
+              Navigator.pushNamed(context, '/add');
             },
           ),
         ],
       ),
-      body: ListView(
-
+      body: Column(
         children: [
-          /*
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: errands.snapshots(),
@@ -48,8 +47,16 @@ class _HomePageState extends State<HomePage> {
                 if(snapshot.connectionState == ConnectionState.waiting) {
                   return Text('Loading');
                 }
-                return ListView(
-                  children: _buildListCards(context, documents),
+                // print("document length is " + documents.length.toString());
+                return ListView.builder(
+                  itemCount: 1,
+                  padding: EdgeInsets.all(16.0),
+                  itemBuilder: (context, _) {
+                    return Column(
+                      children: _buildListCards(context, documents),
+                    );
+                  },
+                  //children: _buildListCards(context, documents),
                 );
               },
             ),
@@ -60,7 +67,7 @@ class _HomePageState extends State<HomePage> {
             ),
             onPressed: _signOut,
           ),
-          */
+
 
         ],
 
@@ -71,32 +78,61 @@ class _HomePageState extends State<HomePage> {
   List<Card> _buildListCards(BuildContext context, List<DocumentSnapshot> documents) {
     return documents
         .map((docs) => Card (
+      elevation: 20,
       child: InkWell(
         onTap: () {
           Navigator.pushNamed(context, '/detail', arguments: docs);
         },
-        child: Card(
-          child: Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.zero,
-                child: Column(
-                  children: [
-                    Text(docs['title']),
-                    Text(docs['description']),
-                    TextButton(
-                      child: Text('More', style: TextStyle(fontSize: 10)),
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all(EdgeInsets.zero),
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/detail', arguments: docs);
-                      },
+        child: Container(
+          height: 200,
+          child: Padding(
+            padding: EdgeInsets.all(5),
+
+            child: Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width/2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(docs['title']),
+                        SizedBox(height:8),
+                        Text(docs['reward'].toString() + '원'),
+                        SizedBox(height:32),
+                        Text(docs['timestamp'].toDate().toString(),
+                          style: TextStyle(color: Colors.grey),),
+
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Text(docs['category'], style: TextStyle(color: Colors.white),)
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
