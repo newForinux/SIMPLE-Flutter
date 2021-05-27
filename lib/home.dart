@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: errands.snapshots(),
+              stream: errands.where('category', isEqualTo: '기타').snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
                 if(snapshot.hasError) {

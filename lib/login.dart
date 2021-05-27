@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
               child: ElevatedButton(
                 onPressed: () {
                   signInWithGoogle().then((UserCredential userCredential) {
-                    Navigator.pushNamed(context, '/home');
+                    Navigator.pushNamed(context, '/categorySelection');
                   });
                 },
                 style: ButtonStyle(
@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                 child:Text('anonymous log in'),
                 onPressed: () async {
                   signInAnonymously();
-                  await Navigator.pushNamed(context, '/home');
+                  await Navigator.pushNamed(context, '/categorySelection');
                 }
             ),
           ],

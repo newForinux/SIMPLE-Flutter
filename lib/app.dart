@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_flutter/categorySelection.dart';
 import 'package:simple_flutter/update.dart';
 
 import 'add.dart';
@@ -31,6 +32,7 @@ class SimpleApp extends StatelessWidget {
         //'/profile' : (context) => ProfilePage(),
         '/detail' : (context) => DetailPage(),
         '/update' : (context) => UpdatePage(),
+        '/categorySelection': (context) => CategorySelectionPage(),
       },
 
       onGenerateRoute: _getRoute,

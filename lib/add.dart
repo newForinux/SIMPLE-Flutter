@@ -13,7 +13,10 @@ class _AddPageState extends State<AddPage> {
   final CollectionReference errands = FirebaseFirestore.instance.collection('errands');
   var user = FirebaseAuth.instance.currentUser;
 
-  List<String> _valueList = ['기타', '배달', '빨래'];
+  List<String> _valueList = [
+    '기타', '편의점', '커피&디저트', '중고거래대행', '약국', '택배&우편물',
+    '세탁소&구두', '상품교환', '짐옮기기',
+  ];
   var _selectedCategory = '기타';
 
   final _titleController = TextEditingController();
@@ -29,7 +32,8 @@ class _AddPageState extends State<AddPage> {
       'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
       'userId': user!.uid,
       'timestamp': FieldValue.serverTimestamp(),
-
+      'ongoing': false,
+      'done': false,
     })
         .then((value) => print("Added"))
         .catchError((error) => print("Failed to Add: $error"));
