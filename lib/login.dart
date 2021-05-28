@@ -33,84 +33,130 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Start!'),
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
-          children: <Widget>[
-            SizedBox(height: 80),
-            Column(
-              children: [
-                Text('심플')
-              ],
-            ),
-            ButtonTheme(
-              height: 40,
-              padding: EdgeInsets.all(0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(3.0),
-                side: BorderSide.none
+      body: Container(
+        color: Color(0xff3a9ad9),
+        child: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            children: <Widget>[
+              SizedBox(height: 100),
+              Column(
+                children: [
+                  Text(
+                    '심플',
+                    style: TextStyle(
+                      fontFamily: "Cafe24 Surround",
+                      fontSize: 48,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Container(
+                    width: 60,
+                    child: Divider(
+                      height: 0,
+                      thickness: 3.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    '당신의 심부름 플레이스',
+                    style: TextStyle(
+                      fontFamily: "Vitro Pride",
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                ],
               ),
-              child: ElevatedButton(
-                onPressed: () {
-                  signInWithGoogle().then((UserCredential userCredential) {
-                    Navigator.pushNamed(context, '/categorySelection');
-                  });
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.white),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(1.0),
-                      child: Container(
-                        height: 38.0,
-                        width: 38.0,
-                        decoration: BoxDecoration(
-                          color: null,
+              Container(
+                width: 100,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonTheme(
+                      height: 40,
+                      padding: EdgeInsets.all(0),
+                      shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(3.0),
+                          side: BorderSide.none
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          signInWithGoogle().then((UserCredential userCredential) {
+                            Navigator.pushNamed(context, '/categorySelection');
+                          });
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.white),
                         ),
-                        child: Center(
-                          child: Image.network(
-                            'https://pngimg.com/uploads/google/google_PNG19635.png',
-                            fit: BoxFit.cover,
-                            height: 30.0,
-                            width: 30.0,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(1.0),
+                              child: Container(
+                                height: 38.0,
+                                width: 38.0,
+                                decoration: BoxDecoration(
+                                  color: null,
+                                  borderRadius: BorderRadius.circular(3.0),
+                                ),
+                                child: Center(
+                                  child: Image.network(
+                                    'https://pngimg.com/uploads/google/google_PNG19635.png',
+                                    fit: BoxFit.cover,
+                                    height: 30.0,
+                                    width: 30.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 14.0,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                              child: Text(
+                                "구글 아이디로 로그인",
+                                style: GoogleFonts.notoSans(
+                                    textStyle: TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.black.withOpacity(0.54),
+                                    )
+                                ),
+                              ),
+                            )
+                          ],
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 14.0,
+                    ElevatedButton(
+                        child:Text('anonymous log in'),
+                        onPressed: () async {
+                          signInAnonymously();
+                          await Navigator.pushNamed(context, '/categorySelection');
+                        }
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                      child: Text(
-                        "구글 아이디로 로그인",
-                        style: GoogleFonts.notoSans(
-                          textStyle: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black.withOpacity(0.54),
-                          )
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ),
-            ),
-            ElevatedButton(
-                child:Text('anonymous log in'),
-                onPressed: () async {
-                  signInAnonymously();
-                  await Navigator.pushNamed(context, '/categorySelection');
-                }
-            ),
-          ],
+              SizedBox(height: 30),
+              Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("images/screen.png"),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
