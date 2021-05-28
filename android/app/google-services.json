@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1084619588868",
+    "project_id": "simple-flutter-f6629",
+    "storage_bucket": "simple-flutter-f6629.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084619588868:android:6010881d00c9fbf9b5fc51",
+        "android_client_info": {
+          "package_name": "edu.handong.simple_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084619588868-4a41o0ppongb3f8kjei2cpqfdmgmcr8v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.handong.simple_flutter",
+            "certificate_hash": "76056e7dec54eab775a8448700ee6aba0bfb402d"
+          }
+        },
+        {
+          "client_id": "1084619588868-hg4tg0cgdr3ak38dh6gjgdeb4buod88p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7h54lNg-JQLQjWY0HAQjAzr76RytSimU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084619588868-hg4tg0cgdr3ak38dh6gjgdeb4buod88p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
