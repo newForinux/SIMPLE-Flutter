@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:simple_flutter/categorySelection.dart';
+import 'package:simple_flutter/update.dart';
 
+import 'add.dart';
+import 'detail.dart';
 import 'home.dart';
 import 'login.dart';
 
+final PURPLE = 0xFF8182A7;
 
 class SimpleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          primaryColor: Colors.grey,
+          primaryColor: Color(PURPLE),
           backgroundColor: Colors.white,
           accentColor: Colors.black,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           primaryTextTheme: TextTheme(
             title: TextStyle(color: Colors.black),
-          )
+          ),
       ),
       title: 'SIMPLE flutter',
       home: HomePage(),
@@ -23,10 +28,11 @@ class SimpleApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
-        //'/add' : (context) => AddPage(),
+        '/add' : (context) => AddPage(),
         //'/profile' : (context) => ProfilePage(),
-        //'/detail' : (context) => DetailPage(),
-        //'/update' : (context) => UpdatePage(),
+        '/detail' : (context) => DetailPage(),
+        '/update' : (context) => UpdatePage(),
+        '/categorySelection': (context) => CategorySelectionPage(),
       },
 
       onGenerateRoute: _getRoute,

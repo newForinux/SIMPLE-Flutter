@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -25,9 +26,16 @@ class _LoginPageState extends State<LoginPage> {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  Future<void> signInAnonymously() async {
+    final UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Start!'),
+      ),
       body: SafeArea(
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -48,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
               child: ElevatedButton(
                 onPressed: () {
                   signInWithGoogle().then((UserCredential userCredential) {
-                    Navigator.pop(context);
+                    Navigator.pushNamed(context, '/categorySelection');
                   });
                 },
                 style: ButtonStyle(
@@ -93,8 +101,15 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   ],
                 ),
-              )
-            )
+              ),
+            ),
+            ElevatedButton(
+                child:Text('anonymous log in'),
+                onPressed: () async {
+                  signInAnonymously();
+                  await Navigator.pushNamed(context, '/categorySelection');
+                }
+            ),
           ],
         ),
       ),
