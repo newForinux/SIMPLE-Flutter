@@ -22,23 +22,8 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
               icon: Icon(Icons.local_convenience_store),
               onPressed: () {
                 // navigate to home with certain (value) to build list card view with switch(value)
+                Navigator.pushNamed(context, '/home');
               },
-            ),
-            IconButton(
-              icon: Icon(Icons.pending_actions),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.local_convenience_store),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.local_convenience_store),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.local_convenience_store),
-              onPressed: () {},
             ),
           ],
         ),
