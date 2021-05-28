@@ -19,6 +19,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as String;
+
     CollectionReference errands = FirebaseFirestore.instance
         .collection('errands');
 
@@ -36,9 +38,10 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
+          Text('Test: ' + args),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: errands.where('category', isEqualTo: '기타').snapshots(),
+              stream: errands.where('category', isEqualTo: args).snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
                 if(snapshot.hasError) {
