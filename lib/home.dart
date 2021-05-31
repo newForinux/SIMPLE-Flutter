@@ -43,13 +43,14 @@ class _HomePageState extends State<HomePage> {
             child: StreamBuilder<QuerySnapshot>(
               stream: errands.where('category', isEqualTo: args).snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
-                if(snapshot.hasError) {
-                  return Text('Something went wrong');
-                }
-                if(snapshot.connectionState == ConnectionState.waiting) {
-                  return Text('Loading');
-                }
+
                 // print("document length is " + documents.length.toString());
                 return ListView.builder(
                   itemCount: 1,
@@ -70,10 +71,7 @@ class _HomePageState extends State<HomePage> {
             ),
             onPressed: _signOut,
           ),
-
-
         ],
-
       ),
     );
   }
