@@ -15,6 +15,32 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
     'assets/images/slider/simple_spectrum.png',
   ];
 
+  final List<String> errandsList = [
+    '편의점',
+    '사무용품',
+    '카페/디저트',
+    '거래 대행',
+    '상비약',
+    '택배/우편',
+    '세탁/클리닝',
+    '물품 교환',
+    '물품 옮기기',
+    '기타'
+  ];
+
+  final List<String> errandsImgList = [
+    'assets/convenience_store.png',
+    'assets/office_supplies.png',
+    'assets/coffee.png',
+    'assets/transaction.png',
+    'assets/pharmacy.png',
+    'assets/package.png',
+    'assets/laundry.png',
+    'assets/exchange.png',
+    'assets/luggage.png',
+    'assets/ect.png'
+  ];
+
   int _currentIndex = 0;
   String convenienceStore = '편의점';
   String officeSupplies = '사무용품';
@@ -111,198 +137,43 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: 3,
             padding: EdgeInsets.all(8),
-            children: [
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: convenienceStore);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/convenience_store.png'),
+            children: errandsList.map((errand) {
+              int index = errandsList.indexOf(errand);
+                return InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/home', arguments: errand);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 5.0),
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.fitWidth,
+                              image: AssetImage(
+                                errandsImgList[index],
+                              )
+                            ),
+                          ),
+                          child: SizedBox(),
                         ),
-                      ),
-                      Text('편의점', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: officeSupplies);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/office_supplies.png'),
+                        Text(
+                          errandsList[index],
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text('사무용품', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: coffee);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/coffee.png'),
-                        ),
-                      ),
-                      Text('커피&디저트', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: transaction);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/transaction.png'),
-                        ),
-                      ),
-                      Text('중고거래대행', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: pharmacy);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/pharmacy.png'),
-                        ),
-                      ),
-                      Text('약국', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: package);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/package.png'),
-                        ),
-                      ),
-                      Text('택배&우편물', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: laundry);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/laundry.png'),
-                        ),
-                      ),
-                      Text('세탁소&구두', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: exchange);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/exchange.png'),
-                        ),
-                      ),
-                      Text('상품교환', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: luggage);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/luggage.png'),
-                        ),
-                      ),
-                      Text('짐옮기기', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: ect);
-                },
-                child: Padding(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3/1.5,
-                        child: Image(
-                          image: AssetImage('assets/ect.png'),
-                        ),
-                      ),
-                      Text('기타', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+                );
+            }).toList(),
           ),
         ],
       ),
