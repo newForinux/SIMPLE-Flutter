@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_flutter/categorySelection.dart';
+import 'package:simple_flutter/category_selection.dart';
 import 'package:simple_flutter/update.dart';
 
 import 'add.dart';
