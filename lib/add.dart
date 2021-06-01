@@ -46,7 +46,7 @@ class _AddPageState extends State<AddPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.cancel),
-          onPressed: () => Navigator.pushNamed(context, '/home'),
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text('Add'),
         actions: [

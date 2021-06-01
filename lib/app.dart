@@ -14,13 +14,13 @@ class SimpleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          primaryColor: Color(PURPLE),
-          backgroundColor: Colors.white,
-          accentColor: Colors.black,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          primaryTextTheme: TextTheme(
-            title: TextStyle(color: Colors.black),
-          ),
+        primaryColor: Color(PURPLE),
+        backgroundColor: Colors.white,
+        accentColor: Colors.black,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryTextTheme: TextTheme(
+          title: TextStyle(color: Colors.black),
+        ),
       ),
       title: 'SIMPLE flutter',
       home: HomePage(),
@@ -51,4 +51,3 @@ class SimpleApp extends StatelessWidget {
     );
   }
 }
-
