@@ -1,15 +1,25 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'categorySelection.dart';
+import 'detail.dart';
+import 'home.dart';
 
 class UpdatePage extends StatefulWidget {
+  static const routeName = '/update';
   @override
   _UpdatePageState createState() => _UpdatePageState();
 }
 
 class _UpdatePageState extends State<UpdatePage> {
+  String imageUrl = '';
 
   final CollectionReference errands = FirebaseFirestore.instance.collection('errands');
   var user = FirebaseAuth.instance.currentUser;
@@ -22,24 +32,24 @@ class _UpdatePageState extends State<UpdatePage> {
   final _rewardController = TextEditingController();
   final _descriptionController = TextEditingController();
 
-  Future<void> updateCard() {
-
-    return errands.doc(user!.uid).update({
-      'category':_selectedCategory,
-      'title': _titleController.text,
-      'description':_descriptionController.text,
-      'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
-      //'userId': user!.uid,
-      //'timestamp': FieldValue.serverTimestamp(),
-
-    })
-        .then((value) => print("Added"))
-        .catchError((error) => print("Failed to Add: $error"));
-  }
 
   @override
   Widget build(BuildContext context) {
     final args_fromDetail = ModalRoute.of(context)!.settings.arguments as DocumentSnapshot;
+    Future<void> updateCard() {
+
+      return errands.doc(user!.uid).update({
+        'title': _titleController.text,
+        'description':_descriptionController.text,
+        'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
+        'image': (imageUrl == '')? args_fromDetail.data()!['image'] : imageUrl,
+        //'userId': user!.uid,
+        //'timestamp': FieldValue.serverTimestamp(),
+
+      })
+          .then((value) => print("Added"))
+          .catchError((error) => print("Failed to Add: $error"));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -48,13 +58,12 @@ class _UpdatePageState extends State<UpdatePage> {
           TextButton(
               child: Text('SAVE'),
               onPressed: () async {
-                if (_titleFormkey.currentState!.validate()) {
                   await updateCard();
-                  Navigator.pushNamed(context, '/home');
-                } else {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data'),));
-                }
+                  final snackBar = SnackBar(
+                    content: Text('Updated!'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  Navigator.pop(context);
               }
           )
         ],
@@ -63,33 +72,7 @@ class _UpdatePageState extends State<UpdatePage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Text('카테고리', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
-            SizedBox(height:8),
-            Text('종류를 선택하세요', style: TextStyle(color: Colors.grey)),
-            DropdownButtonHideUnderline(
-              child: DropdownButton(
-                value: _selectedCategory,
-                items: _valueList.map(
-                      (value) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Text(value),
-                    );
-                  },
-                ).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCategory= value.toString();
-                  });
-                },
-              ),
-            ),
-            SizedBox(height:8),
-            Divider(
-              height: 8,
-              thickness: 1,
-              color: Colors.grey,
-            ),
+            Text('카테고리: ' + args_fromDetail.data()!['category'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
             SizedBox(height:8),
             Form(
               key: _titleFormkey,
@@ -105,6 +88,23 @@ class _UpdatePageState extends State<UpdatePage> {
                   }
                   return null;
                 },
+              ),
+            ),
+            SizedBox(height: 16,),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Image.network(
+                  (imageUrl == '')? args_fromDetail.data()!['image'] : imageUrl,
+                    width: MediaQuery.of(context).size.width / 4,
+                  ),
+                  IconButton(
+                    onPressed: () => uploadImage(),
+                    icon: Icon(Icons.drive_folder_upload),
+                  ),
+                ],
               ),
             ),
             Container(
@@ -142,4 +142,27 @@ class _UpdatePageState extends State<UpdatePage> {
       ),
     );
   }
+
+  uploadImage() async {
+    final _storage = FirebaseStorage.instance;
+    final _picker = ImagePicker();
+    PickedFile image;
+
+    image = (await _picker.getImage(source: ImageSource.gallery))!;
+    var file = File(image.path);
+
+    if (image != null) {
+      // Upload to Firebase
+
+      var snapshot = await _storage.ref()
+          .child(image.path)
+          .putFile(file);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+
+      setState(() {
+        imageUrl = downloadUrl;
+      });
+    }
+  }
+
 }

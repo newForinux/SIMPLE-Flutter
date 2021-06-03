@@ -1,5 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'home.dart';
 
 class CategorySelectionPage extends StatefulWidget {
   @override
@@ -7,6 +10,7 @@ class CategorySelectionPage extends StatefulWidget {
 }
 
 class _CategorySelectionPageState extends State<CategorySelectionPage> {
+
   late PageController pageController;
   final List<String> imagesList = [
     'assets/images/slider/simple_intro.png',
@@ -65,6 +69,14 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+          ),
+        ],
         title: Text('심플'),
       ),
       body: ListView(
@@ -141,7 +153,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
               int index = errandsList.indexOf(errand);
               return InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, '/home', arguments: errand);
+                  Navigator.pushNamed(context, HomePage.routeName, arguments: errand);
                 },
                 child: Padding(
                   padding: EdgeInsets.zero,
