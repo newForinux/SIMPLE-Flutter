@@ -72,7 +72,7 @@ class _AddPageState extends State<AddPage> {
         title: Text('Add'),
         actions: [
           TextButton(
-            child: Text('SAVE'),
+            child: Text('SAVE', style: TextStyle(color: Colors.white)),
             onPressed: () async {
               if (_titleFormkey.currentState!.validate()) {
                 await errands.doc(user!.uid).set({
