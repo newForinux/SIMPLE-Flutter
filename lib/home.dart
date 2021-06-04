@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     final args = ModalRoute.of(context)!.settings.arguments as String;
 
     CollectionReference errands = FirebaseFirestore.instance
-        .collection('errands');
+        .collection(args);
 
 
     return Scaffold(
@@ -47,7 +47,6 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          Text('Test: ' + args),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: errands.where('category', isEqualTo: args).snapshots(),
@@ -60,7 +59,6 @@ class _HomePageState extends State<HomePage> {
 
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
 
-                // print("document length is " + documents.length.toString());
                 return ListView.builder(
                   itemCount: 1,
                   padding: EdgeInsets.all(16.0),
