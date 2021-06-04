@@ -42,16 +42,6 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
   ];
 
   int _currentIndex = 0;
-  String convenienceStore = '편의점';
-  String officeSupplies = '사무용품';
-  String coffee = '커피&디저트';
-  String transaction = '중고거래대행';
-  String pharmacy = '약국';
-  String package = '택배&우편물';
-  String laundry = '세탁소&구두';
-  String exchange = '상품교환';
-  String luggage = '짐옮기기';
-  String ect = '기타';
 
   @override
   void initState() {
@@ -135,7 +125,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
             shrinkWrap: true,
             primary: true,
             physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: 3,
+            crossAxisCount: 4,
             padding: EdgeInsets.all(8),
             children: errandsList.map((errand) {
               int index = errandsList.indexOf(errand);
