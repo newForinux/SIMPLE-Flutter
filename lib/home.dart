@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -19,26 +18,47 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as String;
+    var args = ModalRoute.of(context)!.settings.arguments as String;
+
+    if (args.compareTo("카페/디저트") == 0)
+      args = "카페";
+    else if (args.compareTo("세탁/클리닝") == 0)
+      args = "세탁";
 
     CollectionReference errands = FirebaseFirestore.instance
-        .collection('errands');
+        .collection(args);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('게시판 목록 (HOME) '),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          )
+        ),
+        title: Text(
+          args + " 리스트",
+          style: TextStyle(
+            fontFamily: "Vitro Pride",
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
         actions: [
           IconButton(
             icon: Icon(Icons.add),
+            color: Colors.black,
             onPressed: () {
-              Navigator.pushNamed(context, '/add');
+              Navigator.pushNamed(context, '/add', arguments: args);
             },
           ),
         ],
       ),
       body: Column(
         children: [
-          Text('Test: ' + args),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: errands.where('category', isEqualTo: args).snapshots(),
