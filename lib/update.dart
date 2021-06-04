@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'categorySelection.dart';
 import 'detail.dart';
 import 'home.dart';
 

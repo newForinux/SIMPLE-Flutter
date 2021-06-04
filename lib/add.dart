@@ -20,14 +20,13 @@ class _AddPageState extends State<AddPage> {
   final CollectionReference errands = FirebaseFirestore.instance.collection('errands');
   var user = FirebaseAuth.instance.currentUser;
 
-  /*
-  List<String> _valueList = [
-    '기타', '편의점', '커피&디저트', '중고거래대행', '약국', '택배&우편물',
-    '세탁소&구두', '상품교환', '짐옮기기',
-  ];
-  var _selectedCategory = '기타';
 
-   */
+  List<String> _durationList = [
+    '1일(24시간)', '2일(48시간)', '3일(72시간)', '일주일',
+  ];
+  var _selectedDuration = '1일(24시간)';
+
+
 
   final _titleController = TextEditingController();
   final _titleFormkey = GlobalKey<FormState>();
@@ -35,7 +34,7 @@ class _AddPageState extends State<AddPage> {
   final _descriptionController = TextEditingController();
 
   String formatTimestamp (int timestamp) {
-    var format = DateFormat('d MMM, hh:mm a');
+    var format = DateFormat('Md, hh:mm a');
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     return format.format(date);
   }
@@ -82,10 +81,13 @@ class _AddPageState extends State<AddPage> {
                   'description':_descriptionController.text,
                   'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
                   'userId': user!.uid,
-                  'timestamp': FieldValue.serverTimestamp(),
+                  'date': DateFormat.Md().format(DateTime.now())
+                      + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
+                  'timestamp': DateTime.now().toUtc(),
                   'ongoing': false,
                   'done': false,
                   'image': imageUrl,
+                  'duration': _selectedDuration,
                 });
                 Navigator.pop(context);
               } else {
@@ -163,6 +165,30 @@ class _AddPageState extends State<AddPage> {
                 Container(
                   child: Text('  원'),
                 )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('마감기간: '),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    value: _selectedDuration,
+                    items: _durationList.map(
+                          (value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedDuration= value.toString();
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
           ],

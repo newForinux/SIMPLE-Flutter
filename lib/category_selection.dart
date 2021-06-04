@@ -30,7 +30,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
 
   final List<String> errandsImgList = [
     'assets/convenience_store.png',
-    'assets/office_supplies.png',
+    'assets/office_supply.png',
     'assets/coffee.png',
     'assets/transaction.png',
     'assets/pharmacy.png',

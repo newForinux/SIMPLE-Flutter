@@ -107,13 +107,25 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(docs['title']),
+                        Text(docs['title'],
+                            style: TextStyle(
+                                fontFamily: "Cafe24 Surround",
+                              fontSize: 18,
+                            )
+                        ),
                         SizedBox(height:8),
-                        Text(docs['reward'].toString() + '원'),
+                        Text(docs['reward'].toString() + '원',
+                            style: TextStyle(
+                                color: Colors.purple, fontFamily: "Cafe24 Surround",
+                              fontSize: 20,
+                            )
+                        ),
                         SizedBox(height:32),
-                        // Text(DateFormat.Md().format(DateTime.fromMicrosecondsSinceEpoch(docs['timestamp']))),
-                        Text(docs['timestamp'].toString(),
-                          style: TextStyle(color: Colors.grey),),
+                        Text(docs['date'],
+                            style: TextStyle(
+                                fontFamily: "Cafe24 Surround"
+                            )
+                        ),
 
                       ],
                     ),
@@ -125,6 +137,7 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      (docs['ongoing'] == true)?
                       Stack(
                         alignment: Alignment.center,
                         children: [
@@ -136,7 +149,31 @@ class _HomePageState extends State<HomePage> {
                               shape: BoxShape.circle,
                             ),
                           ),
-                          Text(docs['category'], style: TextStyle(color: Colors.white),)
+                          Text('진행중',
+                            style: TextStyle(
+                              color: Colors.white, fontFamily: "Cafe24 Surround",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ) :
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Text('진행가능',
+                            style: TextStyle(
+                              color: Colors.white, fontFamily: "Cafe24 Surround",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
                         ],
                       ),
                     ],
