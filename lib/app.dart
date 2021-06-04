@@ -19,10 +19,10 @@ class SimpleApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Color(0xff3a9ad9),
         backgroundColor: Colors.white,
-        accentColor: Colors.black,
+        accentColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         primaryTextTheme: TextTheme(
-          title: TextStyle(color: Colors.black),
+          title: TextStyle(color: Colors.white),
         ),
       ),
       title: 'SIMPLE flutter',

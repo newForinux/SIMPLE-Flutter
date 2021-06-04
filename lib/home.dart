@@ -107,21 +107,22 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(docs['title'],
                             style: TextStyle(
-                                fontFamily: "Vitro Pride",
+                                fontFamily: "RobotoMono",
+                              fontWeight: FontWeight.bold,
                               fontSize: 18,
                             )
                         ),
                         SizedBox(height:8),
                         Text(docs['reward'].toString() + '원',
                             style: TextStyle(
-                                color: Colors.purple, fontFamily: "Vitro Pride",
+                                color: Colors.purple, fontFamily: "RobotoMono",
                               fontSize: 20,
                             )
                         ),
                         SizedBox(height:32),
                         Text(docs['date'],
                             style: TextStyle(
-                                fontFamily: "Cafe24 Surround"
+                                fontFamily: "RobotoMono"
                             )
                         ),
 
@@ -149,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Text('진행중',
                             style: TextStyle(
-                              color: Colors.white, fontFamily: "Cafe24 Surround",
+                              color: Colors.white, fontFamily: "RobotoMono",
                               fontWeight: FontWeight.bold,
                             ),
                           )
@@ -168,7 +169,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Text('진행가능',
                             style: TextStyle(
-                              color: Colors.white, fontFamily: "Cafe24 Surround",
+                              color: Colors.white, fontFamily: "RobotoMono",
                               fontWeight: FontWeight.bold,
                             ),
                           )
