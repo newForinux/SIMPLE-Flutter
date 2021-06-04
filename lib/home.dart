@@ -3,8 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'add.dart';
+import 'detail.dart';
+import 'package:intl/intl.dart';
+
 
 class HomePage extends StatefulWidget {
+  static const routeName = '/home';
+  //final String category;
+  // const HomePage({Key? key, required this.category}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -24,6 +32,7 @@ class _HomePageState extends State<HomePage> {
     CollectionReference errands = FirebaseFirestore.instance
         .collection('errands');
 
+
     return Scaffold(
       appBar: AppBar(
         title: Text('게시판 목록 (HOME) '),
@@ -31,7 +40,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.pushNamed(context, '/add');
+              Navigator.pushNamed(context, AddPage.routeName, arguments: args);
             },
           ),
         ],
@@ -82,7 +91,7 @@ class _HomePageState extends State<HomePage> {
       elevation: 20,
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, '/detail', arguments: docs);
+          Navigator.pushNamed(context, DetailPage.routeName, arguments: docs);
         },
         child: Container(
           height: 200,
@@ -98,12 +107,25 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(docs['title']),
+                        Text(docs['title'],
+                            style: TextStyle(
+                                fontFamily: "Vitro Pride",
+                              fontSize: 18,
+                            )
+                        ),
                         SizedBox(height:8),
-                        Text(docs['reward'].toString() + '원'),
+                        Text(docs['reward'].toString() + '원',
+                            style: TextStyle(
+                                color: Colors.purple, fontFamily: "Vitro Pride",
+                              fontSize: 20,
+                            )
+                        ),
                         SizedBox(height:32),
-                        Text(docs['timestamp'].toDate().toString(),
-                          style: TextStyle(color: Colors.grey),),
+                        Text(docs['date'],
+                            style: TextStyle(
+                                fontFamily: "Cafe24 Surround"
+                            )
+                        ),
 
                       ],
                     ),
@@ -115,6 +137,7 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      (docs['ongoing'] == true)?
                       Stack(
                         alignment: Alignment.center,
                         children: [
@@ -126,7 +149,31 @@ class _HomePageState extends State<HomePage> {
                               shape: BoxShape.circle,
                             ),
                           ),
-                          Text(docs['category'], style: TextStyle(color: Colors.white),)
+                          Text('진행중',
+                            style: TextStyle(
+                              color: Colors.white, fontFamily: "Cafe24 Surround",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ) :
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Text('진행가능',
+                            style: TextStyle(
+                              color: Colors.white, fontFamily: "Cafe24 Surround",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
                         ],
                       ),
                     ],
