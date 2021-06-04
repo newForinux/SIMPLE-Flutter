@@ -15,16 +15,21 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+
   String imageUrl = 'https://blackmantkd.com/wp-content/uploads/2017/04/default-image-620x600.jpg';
+  final CollectionReference errands = FirebaseFirestore.instance.collection('errands');
   var user = FirebaseAuth.instance.currentUser;
 
-  final List<String> _durationList = [
+
+  List<String> _durationList = [
     '1일(24시간)', '2일(48시간)', '3일(72시간)', '일주일',
   ];
   var _selectedDuration = '1일(24시간)';
 
+
+
   final _titleController = TextEditingController();
-  final _titleFormKey = GlobalKey<FormState>();
+  final _titleFormkey = GlobalKey<FormState>();
   final _rewardController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -34,21 +39,21 @@ class _AddPageState extends State<AddPage> {
     return format.format(date);
   }
 
-  Future<void> addCard(String args) {
-    return FirebaseFirestore.instance.collection(args).add({
+  Future<void> addCard() {
+    //DateTime now = DateTime.now();
+    //DateTime toUtc = DateTime(now.year, now.month, now.day).toUtc();
+    return errands.doc(user!.uid).set({
+      'category': 'category?',
       'title': _titleController.text,
       'description':_descriptionController.text,
       'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
       'userId': user!.uid,
-      'date': DateFormat.Md().format(DateTime.now())
-          + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
-      'timestamp': DateTime.now().toUtc(),
+      // 'timestamp': FieldValue.serverTimestamp(),
+      'timestamp': formatTimestamp(DateTime.now().millisecondsSinceEpoch),
       'ongoing': false,
       'done': false,
-      'image': imageUrl,
-      'duration': _selectedDuration,
     })
-        .then((value) => Navigator.pop(context))
+        .then((value) => print("Added"))
         .catchError((error) => print("Failed to Add: $error"));
   }
 
@@ -56,7 +61,7 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as String;
+    final args = ModalRoute.of(context)!.settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
@@ -65,9 +70,37 @@ class _AddPageState extends State<AddPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Add'),
+        actions: [
+          TextButton(
+              child: Text('SAVE', style: TextStyle(color: Colors.white)),
+              onPressed: () async {
+                if (_titleFormkey.currentState!.validate()) {
+                  await errands.doc(user!.uid).set({
+                    'category': args.toString(),
+                    'title': _titleController.text,
+                    'description':_descriptionController.text,
+                    'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
+                    'userId': user!.uid,
+                    'date': DateFormat.Md().format(DateTime.now())
+                        + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
+                    'timestamp': DateTime.now().toUtc(),
+                    'ongoing': false,
+                    'done': false,
+                    'image': imageUrl,
+                    'duration': _selectedDuration,
+                    'errander': '',
+                  });
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data'),));
+                }
+              }
+          )
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
             Row(
@@ -81,7 +114,7 @@ class _AddPageState extends State<AddPage> {
                 ),
                 SizedBox(width: 8.0),
                 Text(
-                  args,
+                  args.toString(),
                   style: TextStyle(
                     fontSize: 20.0,
                     fontFamily: 'Vitro Pride',
@@ -170,19 +203,16 @@ class _AddPageState extends State<AddPage> {
               height: 16.0,
             ),
             Form(
-              key: _titleFormKey,
+              key: _titleFormkey,
               child: TextFormField(
                 controller: _titleController,
                 decoration: InputDecoration(
-                  hintText: '어떤 게 필요하세요? ',
-                  hintStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                  ),
+                  hintText: '제목: ',
+                  hintStyle: TextStyle(fontWeight: FontWeight.bold,),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '필수 항목입니다';
+                    return '필수항목입니다';
                   }
                   return null;
                 },
@@ -200,11 +230,11 @@ class _AddPageState extends State<AddPage> {
                     height: 100,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        side: BorderSide(
-                          width: 2.0,
-                          color: Colors.black,
-                        )
+                          primary: Colors.white,
+                          side: BorderSide(
+                            width: 2.0,
+                            color: Colors.black,
+                          )
                       ),
                       onPressed: () => uploadImage(),
                       child: Icon(
@@ -237,20 +267,6 @@ class _AddPageState extends State<AddPage> {
                 ),
                 maxLines: null,
               ),
-            ),
-
-            FloatingActionButton(
-              child: Icon(
-                Icons.exit_to_app,
-              ),
-              onPressed: () async {
-                if (_titleFormKey.currentState!.validate()) {
-                  addCard(args);
-                } else {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data'),));
-                }
-              },
             ),
           ],
         ),

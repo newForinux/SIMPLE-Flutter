@@ -90,9 +90,7 @@ flutter:
     - family: Vitro Pride
       fonts:
         - asset: fonts/VitroPride.ttf
-    - family: RobotoMono
-      fonts:
-        - asset: fonts/RobotoMono-Regular.ttf
+
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     final args = ModalRoute.of(context)!.settings.arguments as String;
 
     CollectionReference errands = FirebaseFirestore.instance
-        .collection(args);
+        .collection('errands');
 
 
     return Scaffold(
@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
+          Text('Test: ' + args),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: errands.where('category', isEqualTo: args).snapshots(),
@@ -59,6 +60,7 @@ class _HomePageState extends State<HomePage> {
 
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
 
+                // print("document length is " + documents.length.toString());
                 return ListView.builder(
                   itemCount: 1,
                   padding: EdgeInsets.all(16.0),
@@ -91,94 +93,103 @@ class _HomePageState extends State<HomePage> {
         onTap: () {
           Navigator.pushNamed(context, DetailPage.routeName, arguments: docs);
         },
-        child: Container(
-          height: 200,
-          child: Padding(
-            padding: EdgeInsets.all(5),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            height: 180,
+            child: Padding(
+              padding: EdgeInsets.all(5),
 
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width/2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width/2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(docs['title'],
+                              style: TextStyle(
+                                fontSize: 18,
+                              )
+                          ),
+                          SizedBox(height:8),
+                          Text(docs['reward'].toString() + '원',
+                              style: TextStyle(
+                                color: Colors.purple,
+                                fontSize: 20,
+                              )
+                          ),
+                          SizedBox(height:32),
+                          Text(docs['date'],
+                              style: TextStyle(
+                              )
+                          ),
+
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    //padding: const EdgeInsets.all(8.0),
+                    child: (docs['ongoing'] == true)? Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(docs['title'],
-                            style: TextStyle(
-                                fontFamily: "RobotoMono",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: Colors.deepPurple,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            Text('진행중',
+                              style: TextStyle(
+                                color: Colors.white, fontFamily: "RobotoMono",
+                                fontWeight: FontWeight.bold,
+                              ),
                             )
+                          ],
                         ),
-                        SizedBox(height:8),
-                        Text(docs['reward'].toString() + '원',
-                            style: TextStyle(
-                                color: Colors.purple, fontFamily: "RobotoMono",
-                              fontSize: 20,
+                        SizedBox(height: 8,),
+                        Text('심부름꾼', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(docs['errander'], style: TextStyle(fontSize: 12),),
+                      ],
+                    ) :
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            Text('진행가능',
+                              style: TextStyle(
+                                color: Colors.white, fontFamily: "RobotoMono",
+                                fontWeight: FontWeight.bold,
+                              ),
                             )
+                          ],
                         ),
-                        SizedBox(height:32),
-                        Text(docs['date'],
-                            style: TextStyle(
-                                fontFamily: "RobotoMono"
-                            )
-                        ),
-
+                        Text('심부름꾼: ' + docs['errander']),
                       ],
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      (docs['ongoing'] == true)?
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          Text('진행중',
-                            style: TextStyle(
-                              color: Colors.white, fontFamily: "RobotoMono",
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        ],
-                      ) :
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          Text('진행가능',
-                            style: TextStyle(
-                              color: Colors.white, fontFamily: "RobotoMono",
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

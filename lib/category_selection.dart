@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_flutter/home.dart';
 
 class CategorySelectionPage extends StatefulWidget {
   @override
@@ -139,7 +140,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
               int index = errandsList.indexOf(errand);
                 return InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, '/home', arguments: errand);
+                    Navigator.pushNamed(context, HomePage.routeName, arguments: errand);
                   },
                   child: Padding(
                     padding: EdgeInsets.zero,
