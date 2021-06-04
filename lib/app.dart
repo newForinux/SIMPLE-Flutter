@@ -23,7 +23,7 @@ class SimpleApp extends StatelessWidget {
           ),
       ),
       title: 'SIMPLE flutter',
-      home: CategorySelectionPage(),
+      home: HomePage(),
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginPage(),
