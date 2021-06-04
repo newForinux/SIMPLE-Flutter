@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import 'detail.dart';
 import 'home.dart';
@@ -42,6 +43,8 @@ class _UpdatePageState extends State<UpdatePage> {
         'description':_descriptionController.text,
         'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
         'image': (imageUrl == '')? args_fromDetail.data()!['image'] : imageUrl,
+        'date': DateFormat.Md().format(DateTime.now())
+            + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
         //'userId': user!.uid,
         //'timestamp': FieldValue.serverTimestamp(),
 
@@ -55,14 +58,16 @@ class _UpdatePageState extends State<UpdatePage> {
         title: Text('게시물 수정'),
         actions: [
           TextButton(
-              child: Text('SAVE'),
+              child: Text('저장', style: TextStyle(color: Colors.white),),
               onPressed: () async {
                   await updateCard();
                   final snackBar = SnackBar(
-                    content: Text('Updated!'),
+                    content: Text('업데이트 되었습니다!'),
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   Navigator.pop(context);
+                  Navigator.pop(context);
+                //Navigator.pushNamed(context, HomePage.routeName, arguments: args_fromDetail.data()!['category']);
               }
           )
         ],

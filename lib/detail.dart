@@ -15,7 +15,7 @@ class _DetailPageState extends State<DetailPage> {
 
   var user = FirebaseAuth.instance.currentUser;
   CollectionReference errands = FirebaseFirestore.instance.collection('errands');
-
+  String userImg = 'https://www.clipartkey.com/mpngs/m/152-1520367_user-profile-default-image-png-clipart-png-download.png';
 
 
   @override
@@ -88,37 +88,65 @@ class _DetailPageState extends State<DetailPage> {
             ) : Text(''),
           ],
         ),
-        body: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        body: Padding(
+          padding: EdgeInsets.all(16),
+          child: ListView(
             children: [
-
-
-              Text("category: " + args.data()!['category']),
-              Text("description: " + args.data()!['description']),
-              Text("reward: " + args.data()!['reward'].toString()),
-              Text("timestamp: " + args.data()!['timestamp'].toString()),
-              Text("title: " + args.data()!['title']),
-              Text("userId: " + args.data()!['userId']),
-              Text("ongoing: " + args.data()!['ongoing'].toString()),
-              RaisedButton(
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 4,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              Row(
+                children: [
+                  Image.network(
+                    userImg,
+                    width: MediaQuery.of(context).size.width / 8,
+                  ),
+                  SizedBox(width: 8,),
+                  Column(
                     children: [
-                      Text('진행하기'),
-                      Icon(Icons.arrow_forward),
+                      Text(args.data()!['creator']),
+                      Text(args.data()!['date'].toString()),
                     ],
                   ),
-                ),
-                onPressed: () async {
-                  _showMyDialog();
+                  SizedBox(width:MediaQuery.of(context).size.width/3),
+                  Expanded(
+                    child: RaisedButton(
+                      color: Color(0xff3a9ad9),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(' 진행하기 ',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Icon(Icons.arrow_forward, color: Colors.white,),
+                          ],
+                        ),
+                      ),
+                      onPressed: () async {
+                        _showMyDialog();
 
-                },
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Divider(
+                thickness: 2,
+              ),
+              Text(args.data()!['title'],
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 20
+                ),
+              ),
+              Text(args.data()!['description'],
+                style: TextStyle(
+                    fontSize: 18,
+                ),
               ),
 
-
+              (args.data()!['image'] != 'https://blackmantkd.com/wp-content/uploads/2017/04/default-image-620x600.jpg')?
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: StreamBuilder<QuerySnapshot>(
@@ -134,22 +162,26 @@ class _DetailPageState extends State<DetailPage> {
                       children: snapshot.data!.docs.map((DocumentSnapshot document) {
                         return Image.network(
                           document.data()!['image'],
-                          width: 200,
+                          width: MediaQuery.of(context).size.width,
                         );
                       }).toList(),
-                    );
-
-                    /*
-                  return Image.network(
-                    args.data()!['image'],
-                    width: 200,
-                  );
-
-                   */
-
+                    ); //: SizedBox(height: 0);
                   },
                 ),
-              )
+              ): SizedBox(height:0),
+
+              SizedBox(height: 16,),
+              Text('심부름 값:  ' + args.data()!['reward'].toString() + ' 원',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.right,
+              ),
+
+              SizedBox(height: 16,),
+              Text('댓글'),
+
+
             ],
           ),
         )

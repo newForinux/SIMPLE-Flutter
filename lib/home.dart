@@ -34,20 +34,29 @@ class _HomePageState extends State<HomePage> {
 
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+        ),
+        onPressed: () {
+          Navigator.pushNamed(context, AddPage.routeName, arguments: args);
+        },
+        backgroundColor: Color(0xff3a9ad9),
+        foregroundColor: Colors.white,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       appBar: AppBar(
-        title: Text('게시판 목록 (HOME) '),
+        title: Text('실시간 게시판 목록 '),
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.pushNamed(context, AddPage.routeName, arguments: args);
-            },
-          ),
+            icon: Icon(Icons.exit_to_app),
+            onPressed: _signOut,
+          )
         ],
       ),
       body: Column(
         children: [
-          Text('Test: ' + args),
+
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: errands.where('category', isEqualTo: args).snapshots(),
@@ -73,12 +82,6 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-          ),
-          FloatingActionButton(
-            child: Icon(
-              Icons.exit_to_app,
-            ),
-            onPressed: _signOut,
           ),
         ],
       ),
@@ -111,19 +114,37 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           Text(docs['title'],
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                               )
                           ),
                           SizedBox(height:8),
                           Text(docs['reward'].toString() + '원',
                               style: TextStyle(
-                                color: Colors.purple,
+                                color: Color(0xff3a9ad9),
                                 fontSize: 20,
                               )
                           ),
-                          SizedBox(height:32),
-                          Text(docs['date'],
+                          SizedBox(height:24),
+
+                          (docs['ongoing'] == true)?
+                          Row(
+                            children: [
+                              Text('심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold),),
+                              Text(docs['errander'] + ' 님', style: TextStyle(color: Colors.purple),),
+                            ],
+                          ) : Row(
+                            children: [
+                              Text('심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold),),
+                              Text(docs['errander'] + '없음', style: TextStyle(color: Colors.green),),
+                            ],
+                          ),
+
+                          SizedBox(height: 8,),
+
+                          Text('작성된 날짜 :' + docs['date'],
                               style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
                               )
                           ),
 
@@ -156,9 +177,7 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         ),
-                        SizedBox(height: 8,),
-                        Text('심부름꾼', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text(docs['errander'], style: TextStyle(fontSize: 12),),
+
                       ],
                     ) :
                     Column(
@@ -178,13 +197,12 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Text('진행가능',
                               style: TextStyle(
-                                color: Colors.white, fontFamily: "RobotoMono",
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             )
                           ],
                         ),
-                        Text('심부름꾼: ' + docs['errander']),
                       ],
                     ),
                   ),

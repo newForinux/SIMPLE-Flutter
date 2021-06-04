@@ -81,6 +81,8 @@ class _AddPageState extends State<AddPage> {
                     'description':_descriptionController.text,
                     'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
                     'userId': user!.uid,
+                    'creator': user!.displayName,
+                    'creator_img': user!.photoURL,
                     'date': DateFormat.Md().format(DateTime.now())
                         + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
                     'timestamp': DateTime.now().toUtc(),
