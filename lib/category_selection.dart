@@ -212,7 +212,8 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
               int index = errandsList.indexOf(errand);
                 return InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, HomePage.routeName, arguments: {'errand': errand, 'loc': _currentLoc});
+                    // {'errand': errand, 'loc': _currentLoc}
+                    Navigator.pushNamed(context, HomePage.routeName, arguments: errand);
                   },
                   child: Padding(
                     padding: EdgeInsets.zero,

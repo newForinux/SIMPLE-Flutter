@@ -106,58 +106,58 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 children: [
                   Container(
-                      // width: MediaQuery.of(context).size.width/2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.add_alert, color: Colors.orange,),
-                              Text("  " + docs['creator'],
-                                style: TextStyle(
-                                  fontFamily: "Vitro Pride",
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(' 님의 심부름 요청', style: TextStyle(fontSize: 14),),
-                            ],
-                          ),
-                          SizedBox(height: 12,),
-                          Text(docs['title'],
+                    // width: MediaQuery.of(context).size.width/2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.add_alert, color: Colors.orange,),
+                            Text("  " + docs['creator'],
                               style: TextStyle(
                                 fontFamily: "Vitro Pride",
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
-                              )
-                          ),
+                              ),
+                            ),
+                            Text(' 님의 심부름 요청', style: TextStyle(fontSize: 14),),
+                          ],
+                        ),
+                        SizedBox(height: 12,),
+                        Text(docs['title'],
+                            style: TextStyle(
+                              fontFamily: "Vitro Pride",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            )
+                        ),
 
-                          SizedBox(height:8),
-                          Text(docs['reward'].toString() + ' 원',
-                              style: TextStyle(
-                                color: Color(0xff3a9ad9),
-                                fontSize: 16,
-                              )
-                          ),
-                          SizedBox(height:12),
+                        SizedBox(height:8),
+                        Text(docs['reward'].toString() + ' 원',
+                            style: TextStyle(
+                              color: Color(0xff3a9ad9),
+                              fontSize: 16,
+                            )
+                        ),
+                        SizedBox(height:12),
 
-                          (docs['ongoing'] == true)?
-                          Row(
-                            children: [
-                              Icon(Icons.person_pin_circle_sharp, color: Color(0xff3a9ad9),),
-                              Text(' 심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
-                              Text(docs['errander'] + ' 님', style: TextStyle(color: Colors.purple, fontSize: 12),),
-                            ],
-                          ) : Row(
-                            children: [
-                              Icon(Icons.person_pin_circle_sharp, color: Color(0xff3a9ad9),),
-                              Text(' 심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
-                              // Text(docs['errander'], style: TextStyle(color: Colors.green),),
-                            ],
-                          ),
-                        ],
-                      ),
+                        (docs['ongoing'] == true)?
+                        Row(
+                          children: [
+                            Icon(Icons.person_pin_circle_sharp, color: Color(0xff3a9ad9),),
+                            Text(' 심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                            Text(docs['errander'] + ' 님', style: TextStyle(color: Colors.purple, fontSize: 12),),
+                          ],
+                        ) : Row(
+                          children: [
+                            Icon(Icons.person_pin_circle_sharp, color: Color(0xff3a9ad9),),
+                            Text(' 심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                            // Text(docs['errander'], style: TextStyle(color: Colors.green),),
+                          ],
+                        ),
+                      ],
                     ),
+                  ),
 
                   Expanded(
                     //padding: const EdgeInsets.all(8.0),

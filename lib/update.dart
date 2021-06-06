@@ -157,7 +157,7 @@ class _UpdatePageState extends State<UpdatePage> {
             Form(
               key: _titleFormkey,
               child: TextFormField(
-                maxLength: 16,
+                maxLength: 20,
                 controller: _titleController,
                 decoration: InputDecoration(
                   hintText: args_fromDetail.data()!['title'],
