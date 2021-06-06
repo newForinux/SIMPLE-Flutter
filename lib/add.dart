@@ -39,7 +39,6 @@ class _AddPageState extends State<AddPage> {
 
   String serial_num = randomAlphaNumeric(10);
 
-
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments;
@@ -73,18 +72,7 @@ class _AddPageState extends State<AddPage> {
                     'duration': _selectedDuration,
                     'errander': '',
                     'serial_num': serial_num,
-                    // 'comments': comment_data,
-
                   });
-                  /*
-                  await errands.doc(serial_num).collection('comments').add({
-                    'commentor': '유저',
-                    'comment': '댓글',
-
-                  });
-
-                   */
-
                   Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context)
@@ -200,7 +188,6 @@ class _AddPageState extends State<AddPage> {
             Form(
               key: _titleFormkey,
               child: TextFormField(
-                maxLength: 16,
                 controller: _titleController,
                 decoration: InputDecoration(
                   hintText: '제목: ',
