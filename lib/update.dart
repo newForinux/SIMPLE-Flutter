@@ -28,7 +28,7 @@ class _UpdatePageState extends State<UpdatePage> {
   var _selectedCategory = '기타';
 
   final _titleController = TextEditingController();
-  final _titleFormkey = GlobalKey<FormState>();
+  final _update_title_formkey = GlobalKey<FormState>();
   final _rewardController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -38,7 +38,7 @@ class _UpdatePageState extends State<UpdatePage> {
     final args_fromDetail = ModalRoute.of(context)!.settings.arguments as DocumentSnapshot;
     Future<void> updateCard() {
 
-      return errands.doc(user!.uid).update({
+      return errands.doc(args_fromDetail.data()!['serial_num']).update({
         'title': _titleController.text,
         'description':_descriptionController.text,
         'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
@@ -58,6 +58,12 @@ class _UpdatePageState extends State<UpdatePage> {
         title: Text('게시물 수정'),
         actions: [
           TextButton(
+            child: Text('취소', style: TextStyle(color: Colors.white),),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
               child: Text('저장', style: TextStyle(color: Colors.white),),
               onPressed: () async {
                   await updateCard();
@@ -69,7 +75,7 @@ class _UpdatePageState extends State<UpdatePage> {
                   Navigator.pop(context);
                 //Navigator.pushNamed(context, HomePage.routeName, arguments: args_fromDetail.data()!['category']);
               }
-          )
+          ),
         ],
       ),
       body: Padding(
@@ -79,7 +85,7 @@ class _UpdatePageState extends State<UpdatePage> {
             Text('카테고리: ' + args_fromDetail.data()!['category'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
             SizedBox(height:8),
             Form(
-              key: _titleFormkey,
+              key: _update_title_formkey,
               child: TextFormField(
                 controller: _titleController,
                 decoration: InputDecoration(
