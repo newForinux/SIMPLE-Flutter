@@ -40,7 +40,7 @@ class _DetailPageState extends State<DetailPage> {
               TextButton(
                 child: const Text('아니요'),
                 onPressed: () async {
-                  await errands.doc(args.data()!['userId']).update({
+                  await errands.doc(args.data()!['serial_num']).update({
                     'ongoing': false,
                     'errander': '',
                   });
@@ -50,7 +50,7 @@ class _DetailPageState extends State<DetailPage> {
               TextButton(
                 child: const Text('예'),
                 onPressed: () async {
-                  await errands.doc(args.data()!['userId']).update({
+                  await errands.doc(args.data()!['serial_num']).update({
                     'ongoing': true,
                     'errander': FirebaseAuth.instance.currentUser!.displayName,
                   });
@@ -82,7 +82,7 @@ class _DetailPageState extends State<DetailPage> {
             IconButton(
               icon: Icon(Icons.delete),
               onPressed: () async {
-                await errands.doc(user!.uid).delete();
+                await errands.doc(args.data()!['serial_num']).delete();
                 Navigator.pop(context);
               },
             ) : Text(''),
@@ -150,7 +150,7 @@ class _DetailPageState extends State<DetailPage> {
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: errands.where('userId', isEqualTo: args.data()!['userId']).snapshots(),
+                  stream: errands.where('serial_num', isEqualTo: args.data()!['serial_num']).snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) {
                       return Center(

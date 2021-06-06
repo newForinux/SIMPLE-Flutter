@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
 
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
+              // .orderBy('timestamp', descending: true)
               stream: errands.where('category', isEqualTo: args).snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {

@@ -33,6 +33,7 @@ dependencies:
   provider: ^5.0.0        # new
   carousel_slider: ^4.0.0-nullsafety.0
   intl: ^0.17.0
+  random_string: ^2.2.0-nullsafety
   geolocator: ^7.0.0-nullsafety.0
   geocoding: ^2.0.0
 
