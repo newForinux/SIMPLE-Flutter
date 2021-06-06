@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:random_string/random_string.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -41,46 +42,30 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments;
+    final Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    final String _args = arguments['errand'];
+    final String _loc = arguments['loc'];
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.cancel),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Add'),
-        actions: [
-          TextButton(
-              child: Text('SAVE', style: TextStyle(color: Colors.white)),
-              onPressed: () async {
-                if (_titleFormkey.currentState!.validate()) {
-                  await errands.doc(serial_num).set({
-                    'category': args.toString(),
-                    'title': _titleController.text,
-                    'description':_descriptionController.text,
-                    'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
-                    'userId': user!.uid,
-                    'creator': user!.displayName,
-                    'creator_img': user!.photoURL,
-                    'date': DateFormat.Md().format(DateTime.now())
-                        + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
-                    'timestamp': DateTime.now().toUtc(),
-                    'ongoing': false,
-                    'done': false,
-                    'image': imageUrl,
-                    'duration': _selectedDuration,
-                    'errander': '',
-                    'serial_num': serial_num,
-                  });
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data'),));
-                }
-              }
-          )
-        ],
+        title: Text(
+          '추가하기',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Cafe24 Surround'
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -97,9 +82,29 @@ class _AddPageState extends State<AddPage> {
                 ),
                 SizedBox(width: 8.0),
                 Text(
-                  args.toString(),
+                  _args,
                   style: TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 18.0,
+                    fontFamily: 'Vitro Pride',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height:8),
+            Row(
+              children: [
+                Text(
+                  '플레이스 ',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 8.0),
+                Text(
+                  _loc,
+                  style: TextStyle(
+                    fontSize: 18.0,
                     fontFamily: 'Vitro Pride',
                   ),
                 ),
@@ -189,8 +194,12 @@ class _AddPageState extends State<AddPage> {
               key: _titleFormkey,
               child: TextFormField(
                 controller: _titleController,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18
+                ),
                 decoration: InputDecoration(
-                  hintText: '제목: ',
+                  hintText: '제목을 적어주세요',
                   hintStyle: TextStyle(fontWeight: FontWeight.bold,),
                 ),
                 validator: (value) {
@@ -253,6 +262,54 @@ class _AddPageState extends State<AddPage> {
             ),
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Container(
+        width: 250,
+        child: FloatingActionButton.extended(
+        backgroundColor: Color(0xff3a9ad9),
+        onPressed: () async {
+          if (_titleFormkey.currentState!.validate()) {
+            await errands.doc(serial_num).set({
+              'category': _args,
+              'title': _titleController.text,
+              'description':_descriptionController.text,
+              'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
+              'userId': user!.uid,
+              'creator': user!.displayName,
+              'creator_img': user!.photoURL,
+              'date': DateFormat.Md().format(DateTime.now())
+                  + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
+              'timestamp': DateTime.now().toUtc(),
+              'ongoing': false,
+              'done': false,
+              'image': imageUrl,
+              'duration': _selectedDuration,
+              'errander': '',
+              'serial_num': serial_num,
+              'location': _loc,
+            }).then((value) => Navigator.pop(context));
+
+          } else {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Processing Data'),));
+          }
+        },
+
+        icon: Icon(
+          Icons.save_alt_outlined,
+          color: Colors.white,
+        ),
+        label: Text(
+          '심부름 등록하기',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Vitro Pride'
+          ),
+        ),
+      ),
       ),
     );
   }
