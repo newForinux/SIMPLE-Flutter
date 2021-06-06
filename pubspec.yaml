@@ -46,6 +46,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_native_splash: ^1.1.8+4
+
+flutter_native_splash:
+  background_image: assets/images/splash.png
+  android: true
+  ios: true
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
