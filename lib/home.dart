@@ -27,7 +27,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as String;
+    final Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    final String _args = arguments['errand'];
+    final String _loc = arguments['loc'];
 
     CollectionReference errands = FirebaseFirestore.instance
         .collection('errands');
@@ -39,7 +41,7 @@ class _HomePageState extends State<HomePage> {
           Icons.add,
         ),
         onPressed: () {
-          Navigator.pushNamed(context, AddPage.routeName, arguments: args);
+          Navigator.pushNamed(context, AddPage.routeName, arguments: {'errand': _args, 'loc': _loc});
         },
         backgroundColor: Color(0xff3a9ad9),
         foregroundColor: Colors.white,
@@ -60,7 +62,7 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               // .orderBy('timestamp', descending: true)
-              stream: errands.where('category', isEqualTo: args).snapshots(),
+              stream: errands.where('category', isEqualTo: _args).snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
                   return Center(

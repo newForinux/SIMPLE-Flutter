@@ -52,6 +52,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
   String _subLocality = "";
   String _thoroughfare = "";
   String _subThoroughfare = "";
+  String _currentLoc = "";
 
 
   @override
@@ -85,6 +86,8 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
         _subLocality = place.subLocality!;
         _thoroughfare = place.thoroughfare!;
         _subThoroughfare = place.subThoroughfare!;
+
+        _currentLoc = _locality + " " + _subLocality + " " + _thoroughfare + " " + _subThoroughfare;
       });
     } catch(e) {
       print(e);
@@ -209,7 +212,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
               int index = errandsList.indexOf(errand);
                 return InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, HomePage.routeName, arguments: errand);
+                    Navigator.pushNamed(context, HomePage.routeName, arguments: {'errand': errand, 'loc': _currentLoc});
                   },
                   child: Padding(
                     padding: EdgeInsets.zero,
