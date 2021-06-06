@@ -188,7 +188,7 @@ class _AddPageState extends State<AddPage> {
             Form(
               key: _titleFormkey,
               child: TextFormField(
-                maxLines: 20,
+                maxLength: 20,
                 controller: _titleController,
                 decoration: InputDecoration(
                   hintText: '제목: ',
