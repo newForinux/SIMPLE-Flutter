@@ -1,6 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:simple_flutter/home.dart';
+
 
 class CategorySelectionPage extends StatefulWidget {
   @override
@@ -43,28 +46,93 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
   ];
 
   int _currentIndex = 0;
+  double _latitude = 0;
+  double _longitude = 0;
+  String _locality = "";
+  String _subLocality = "";
+  String _thoroughfare = "";
+  String _subThoroughfare = "";
+
 
   @override
   void initState() {
     super.initState();
     pageController = PageController(
-      initialPage: 1, viewportFraction: 0.8
+        initialPage: 1, viewportFraction: 0.8
     );
+    _getCurrentLocation();
+
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+      _getCurrentAddress();
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  Future<void> _getCurrentAddress() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(_latitude, _longitude, localeIdentifier: "ko_KR");
+      Placemark place = placemarks[0];
+
+      setState(() {
+        _locality = place.locality!;
+        _subLocality = place.subLocality!;
+        _thoroughfare = place.thoroughfare!;
+        _subThoroughfare = place.subThoroughfare!;
+      });
+    } catch(e) {
+      print(e);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.person),
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
             onPressed: () {
               Navigator.pushNamed(context, '/profile');
             },
           ),
         ],
-        title: Text('심플'),
+        title: _locality == "" ?
+        Text(
+          "위치 찾는 중...",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Vitro Pride',
+          ),
+        ) :
+        Text(
+          _locality + " " + _subLocality + " " + _thoroughfare + " " + _subThoroughfare,
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Vitro Pride',
+          ),
+        ),
       ),
       body: ListView(
         children: [
@@ -106,6 +174,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
                 )
             ).toList(),
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: imagesList.map((item) {
