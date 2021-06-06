@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'update.dart';
+import 'package:comment_box/comment/comment.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class DetailPage extends StatefulWidget {
   static const routeName = '/detail';
@@ -16,6 +18,11 @@ class _DetailPageState extends State<DetailPage> {
   var user = FirebaseAuth.instance.currentUser;
   CollectionReference errands = FirebaseFirestore.instance.collection('errands');
   String userImg = 'https://www.clipartkey.com/mpngs/m/152-1520367_user-profile-default-image-png-clipart-png-download.png';
+
+  final _commentController = TextEditingController();
+  bool _isComposing = false;
+
+  final FocusNode _focusNode = FocusNode();
 
 
   @override
@@ -105,7 +112,7 @@ class _DetailPageState extends State<DetailPage> {
                       Text(args.data()!['date'].toString()),
                     ],
                   ),
-                  SizedBox(width:MediaQuery.of(context).size.width/3),
+                  SizedBox(width:MediaQuery.of(context).size.width/4),
                   Expanded(
                     child: RaisedButton(
                       color: Color(0xff3a9ad9),
@@ -140,15 +147,16 @@ class _DetailPageState extends State<DetailPage> {
                     fontWeight: FontWeight.bold, fontSize: 20
                 ),
               ),
+              SizedBox(height: 8,),
               Text(args.data()!['description'],
                 style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                 ),
               ),
 
               (args.data()!['image'] != 'https://blackmantkd.com/wp-content/uploads/2017/04/default-image-620x600.jpg')?
               Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
                 child: StreamBuilder<QuerySnapshot>(
                   stream: errands.where('serial_num', isEqualTo: args.data()!['serial_num']).snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -180,11 +188,100 @@ class _DetailPageState extends State<DetailPage> {
 
               SizedBox(height: 16,),
               Text('댓글'),
+              Divider(
+                thickness: 2,
+              ),
 
+
+              // Text(args.data()!['creator'] + args.data()!['comment']),
+              StreamBuilder<QuerySnapshot>(
+                stream: errands.doc(args.data()!['serial_num'])
+                    .collection('comments').orderBy('timestamp', descending: false).snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  List<DocumentSnapshot> comments = snapshot.data!.docs;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildCommentsBox(context, comments),
+                  ); //: SizedBox(height: 0);
+                },
+
+              ),
+
+
+
+              SizedBox(height: 16,),
+              Container(
+                decoration: BoxDecoration(
+                  color: HexColor("#d3d3d3"),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: TextField(
+                          controller: _commentController,
+                          onChanged: (String text) {
+                            setState(() {
+                              _isComposing = text.isNotEmpty;
+                            });
+                          },
+                          // onSubmitted: _isComposing? _handleSubmitted : null,
+                          focusNode: _focusNode,
+                          decoration:
+                          InputDecoration.collapsed(hintText: ' Send a message '),
+                        ),
+                      ),
+                      Container(
+                          margin: EdgeInsets.symmetric(horizontal: 4.0),
+                          child: IconButton(
+                              icon: Icon(Icons.send),
+                              onPressed: () async {
+                                await errands.doc(args.data()!['serial_num']).collection('comments').add({
+                                  'commentor': user!.displayName,
+                                  'comment': _commentController.text,
+                                  'time': DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
+                                  'timestamp': DateTime.now(),
+                                });
+                                _commentController.clear();
+                              }
+                          )
+                      )
+
+                    ],
+                  ),
+                ),
+              ),
 
             ],
           ),
         )
     );
   }
+
+  List<Row> _buildCommentsBox(BuildContext context, List<DocumentSnapshot> comments) {
+    return comments
+        .map((comment) => Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(comment['commentor']),
+            Text(comment['time'].toString(), style: TextStyle(color: Colors.grey),),
+          ],
+        ),
+        SizedBox(width:12),
+        Expanded(child: Text(comment['comment'], maxLines: 10,)),
+
+      ],
+    )).toList();
+  }
+
 }
+

@@ -24,11 +24,9 @@ class _UpdatePageState extends State<UpdatePage> {
   final CollectionReference errands = FirebaseFirestore.instance.collection('errands');
   var user = FirebaseAuth.instance.currentUser;
 
-  List<String> _valueList = ['기타', '배달', '빨래'];
-  var _selectedCategory = '기타';
-
   final _titleController = TextEditingController();
   final _update_title_formkey = GlobalKey<FormState>();
+  final _titleFormkey = GlobalKey<FormState>();
   final _rewardController = TextEditingController();
   final _descriptionController = TextEditingController();
 
@@ -36,16 +34,21 @@ class _UpdatePageState extends State<UpdatePage> {
   @override
   Widget build(BuildContext context) {
     final args_fromDetail = ModalRoute.of(context)!.settings.arguments as DocumentSnapshot;
+
+
+    // 바뀐게 없으면 args_fromDetail 이용해서 원래 내용을 저장, 만약 유저가 수정한 부분이 있으면 해당 부분 저장
     Future<void> updateCard() {
 
       return errands.doc(args_fromDetail.data()!['serial_num']).update({
-        'title': _titleController.text,
-        'description':_descriptionController.text,
-        'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
+        'title': (_titleController.text.isEmpty)?
+          args_fromDetail.data()!['title'] : _titleController.text,
+        'description': _descriptionController.text.isEmpty?
+          args_fromDetail.data()!['description'] : _descriptionController.text,
+        'reward': (_rewardController.text.isEmpty)?
+          args_fromDetail.data()!['reward'] : int.tryParse(_rewardController.text),
         'image': (imageUrl == '')? args_fromDetail.data()!['image'] : imageUrl,
         'date': DateFormat.Md().format(DateTime.now())
             + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
-        //'userId': user!.uid,
         //'timestamp': FieldValue.serverTimestamp(),
 
       })
@@ -82,11 +85,79 @@ class _UpdatePageState extends State<UpdatePage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Text('카테고리: ' + args_fromDetail.data()!['category'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+            Row(
+              children: [
+                Text(
+                  '카테고리 ',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 8.0),
+                Text(
+                  args_fromDetail.data()!['category'],
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontFamily: 'Vitro Pride',
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height:8),
+            Row(
+              children: [
+                Text(
+                  '지급 비용 ',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 8.0),
+                Container(
+                  width: 100,
+                  child: TextField(
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Color(0xff3a9ad9),
+                    ),
+                    controller: _rewardController,
+                    decoration: InputDecoration(
+                      hintText: args_fromDetail.data()!['reward'].toString(),
+                      hintStyle: TextStyle(
+                        color: Color(0xff3a9ad9),
+                      ),
+                    ),
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                  ),
+                ),
+
+                Container(
+                  child: Text(
+                    ' 원',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+
+                ),
+              ],
+            ),
+
+            SizedBox(
+              height: 16.0,
+            ),
             Form(
-              key: _update_title_formkey,
+              key: _titleFormkey,
               child: TextFormField(
+                maxLength: 16,
                 controller: _titleController,
                 decoration: InputDecoration(
                   hintText: args_fromDetail.data()!['title'],
@@ -100,53 +171,56 @@ class _UpdatePageState extends State<UpdatePage> {
                 },
               ),
             ),
-            SizedBox(height: 16,),
+            SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Image.network(
-                  (imageUrl == '')? args_fromDetail.data()!['image'] : imageUrl,
-                    width: MediaQuery.of(context).size.width / 4,
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          side: BorderSide(
+                            width: 2.0,
+                            color: Colors.black,
+                          )
+                      ),
+                      onPressed: () => uploadImage(),
+                      child: Icon(
+                        Icons.camera_alt_outlined,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
-                  IconButton(
-                    onPressed: () => uploadImage(),
-                    icon: Icon(Icons.drive_folder_upload),
+                  SizedBox(width: 16),
+                  Image.network(
+                    (imageUrl == '')? args_fromDetail.data()!['image'] : imageUrl,
+                    width: MediaQuery.of(context).size.width / 4,
                   ),
                 ],
               ),
             ),
+            SizedBox(height: 16.0),
             Container(
               height: 300,
+              color: Colors.grey[200],
               child: TextField(
                 controller: _descriptionController,
                 decoration: InputDecoration(
                   hintText: args_fromDetail.data()!['description'],
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
                 ),
                 maxLines: null,
               ),
             ),
-            Row(
-              children: [
-                Flexible(
-                  child: TextField(
-                    controller: _rewardController,
-                    decoration: InputDecoration(
-                      hintText: args_fromDetail.data()!['reward'].toString(),
-                    ),
-                    textAlign: TextAlign.right,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Text('  원'),
-                )
-              ],
-            ),
+
           ],
         ),
       ),

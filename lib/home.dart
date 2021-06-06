@@ -41,26 +41,25 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.pushNamed(context, AddPage.routeName, arguments: args);
         },
-        backgroundColor: Color(0xff3a9ad9),
+        backgroundColor: Colors.lightBlue,
         foregroundColor: Colors.white,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       appBar: AppBar(
-        title: Text('실시간 게시판 목록 '),
+        centerTitle: true,
+        title: Text(args),
         actions: [
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: _signOut,
-          )
         ],
       ),
       body: Column(
         children: [
-
+          SizedBox(height: 16,),
+          Text('실시간 게시판 목록', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: "Vitro Pride"),),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               // .orderBy('timestamp', descending: true)
-              stream: errands.where('category', isEqualTo: args).snapshots(),
+              // .where('category', isEqualTo: args)
+              stream: errands.where('category', isEqualTo: args).orderBy('timestamp', descending: true).snapshots(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
@@ -98,61 +97,68 @@ class _HomePageState extends State<HomePage> {
           Navigator.pushNamed(context, DetailPage.routeName, arguments: docs);
         },
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(4.0),
           child: Container(
-            height: 180,
+            height: MediaQuery.of(context).size.height / 5,
             child: Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(16),
 
               child: Row(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width/2,
+                  Container(
+                      // width: MediaQuery.of(context).size.width/2,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            children: [
+                              Icon(Icons.add_alert, color: Colors.orange,),
+                              Text("  " + docs['creator'],
+                                style: TextStyle(
+                                  fontFamily: "Vitro Pride",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(' 님의 심부름 요청', style: TextStyle(fontSize: 14),),
+                            ],
+                          ),
+                          SizedBox(height: 12,),
                           Text(docs['title'],
                               style: TextStyle(
+                                fontFamily: "Vitro Pride",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              )
+                          ),
+
+                          SizedBox(height:8),
+                          Text(docs['reward'].toString() + ' 원',
+                              style: TextStyle(
+                                color: Color(0xff3a9ad9),
                                 fontSize: 16,
                               )
                           ),
-                          SizedBox(height:8),
-                          Text(docs['reward'].toString() + '원',
-                              style: TextStyle(
-                                color: Color(0xff3a9ad9),
-                                fontSize: 20,
-                              )
-                          ),
-                          SizedBox(height:24),
+                          SizedBox(height:12),
 
                           (docs['ongoing'] == true)?
                           Row(
                             children: [
-                              Text('심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold),),
-                              Text(docs['errander'] + ' 님', style: TextStyle(color: Colors.purple),),
+                              Icon(Icons.person_pin_circle_sharp, color: Color(0xff3a9ad9),),
+                              Text(' 심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                              Text(docs['errander'] + ' 님', style: TextStyle(color: Colors.purple, fontSize: 12),),
                             ],
                           ) : Row(
                             children: [
-                              Text('심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold),),
-                              Text(docs['errander'] + '없음', style: TextStyle(color: Colors.green),),
+                              Icon(Icons.person_pin_circle_sharp, color: Color(0xff3a9ad9),),
+                              Text(' 심부름꾼 : ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                              // Text(docs['errander'], style: TextStyle(color: Colors.green),),
                             ],
                           ),
-
-                          SizedBox(height: 8,),
-
-                          Text('작성된 날짜 :' + docs['date'],
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              )
-                          ),
-
                         ],
                       ),
                     ),
-                  ),
+
                   Expanded(
                     //padding: const EdgeInsets.all(8.0),
                     child: (docs['ongoing'] == true)? Column(
@@ -178,7 +184,13 @@ class _HomePageState extends State<HomePage> {
                             )
                           ],
                         ),
-
+                        SizedBox(height: 16),
+                        Text("작성시간: " + docs['date'],
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            )
+                        )
                       ],
                     ) :
                     Column(
@@ -203,6 +215,13 @@ class _HomePageState extends State<HomePage> {
                               ),
                             )
                           ],
+                        ),
+                        SizedBox(height: 16),
+                        Text("작성시간: " + docs['date'],
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            )
                         ),
                       ],
                     ),
