@@ -101,7 +101,7 @@ class _DetailPageState extends State<DetailPage> {
                   SizedBox(width: 8,),
                   Column(
                     children: [
-                      Text(args.data()!['creator']),
+                      Text(args.data()!['creator'].toString()),
                       Text(args.data()!['date'].toString()),
                     ],
                   ),

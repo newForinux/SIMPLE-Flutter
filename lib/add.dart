@@ -39,21 +39,25 @@ class _AddPageState extends State<AddPage> {
     return format.format(date);
   }
 
-  Future<void> addCard() {
-    //DateTime now = DateTime.now();
-    //DateTime toUtc = DateTime(now.year, now.month, now.day).toUtc();
+  Future<void> addCard(String args) {
     return errands.doc(user!.uid).set({
-      'category': 'category?',
+      'category': args.toString(),
       'title': _titleController.text,
       'description':_descriptionController.text,
       'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
       'userId': user!.uid,
-      // 'timestamp': FieldValue.serverTimestamp(),
-      'timestamp': formatTimestamp(DateTime.now().millisecondsSinceEpoch),
+      'creator': user!.displayName,
+      'creator_img': user!.photoURL,
+      'date': DateFormat.Md().format(DateTime.now())
+          + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
+      'timestamp': DateTime.now().toUtc(),
       'ongoing': false,
       'done': false,
+      'image': imageUrl,
+      'duration': _selectedDuration,
+      'errander': '',
     })
-        .then((value) => print("Added"))
+        .then((value) => Navigator.pop(context))
         .catchError((error) => print("Failed to Add: $error"));
   }
 
@@ -70,36 +74,6 @@ class _AddPageState extends State<AddPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text('Add'),
-        actions: [
-          TextButton(
-              child: Text('SAVE', style: TextStyle(color: Colors.white)),
-              onPressed: () async {
-                if (_titleFormkey.currentState!.validate()) {
-                  await errands.doc(user!.uid).set({
-                    'category': args.toString(),
-                    'title': _titleController.text,
-                    'description':_descriptionController.text,
-                    'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
-                    'userId': user!.uid,
-                    'creator': user!.displayName,
-                    'creator_img': user!.photoURL,
-                    'date': DateFormat.Md().format(DateTime.now())
-                        + " " + DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
-                    'timestamp': DateTime.now().toUtc(),
-                    'ongoing': false,
-                    'done': false,
-                    'image': imageUrl,
-                    'duration': _selectedDuration,
-                    'errander': '',
-                  });
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data'),));
-                }
-              }
-          )
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -214,7 +188,7 @@ class _AddPageState extends State<AddPage> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '필수항목입니다';
+                    return '필수 항목입니다.';
                   }
                   return null;
                 },
@@ -273,10 +247,34 @@ class _AddPageState extends State<AddPage> {
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          if (_titleFormkey.currentState!.validate()) {
+            addCard(args.toString());
+          }
+          else {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Processing Data'),));
+          }
+        },
+        backgroundColor: Color(0xff3a9ad9),
+        icon: Icon(
+          Icons.upload_rounded,
+          color: Colors.white,
+        ),
+        label: Text(
+          '저장하기',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 
-  uploadImage() async {
+  void uploadImage() async {
     final _storage = FirebaseStorage.instance;
     final _picker = ImagePicker();
     PickedFile image;
