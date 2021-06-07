@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_flutter/category_selection.dart';
+import 'package:simple_flutter/google_map.dart';
 import 'package:simple_flutter/profile.dart';
 import 'package:simple_flutter/update.dart';
 
@@ -33,6 +34,7 @@ class SimpleApp extends StatelessWidget {
         AddPage.routeName: (context) => AddPage(),
         DetailPage.routeName: (context) => DetailPage(),
         UpdatePage.routeName: (context) => UpdatePage(),
+        '/map': (context) => MapPage(),
         '/categorySelection': (context) => CategorySelectionPage(),
         '/profile': (context) => ProfilePage(),
       },

@@ -62,7 +62,6 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
         initialPage: 1, viewportFraction: 0.8
     );
     _getCurrentLocation();
-
   }
 
   Future<void> _getCurrentLocation() async {
@@ -128,12 +127,23 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
             fontFamily: 'Vitro Pride',
           ),
         ) :
-        Text(
-          _locality + " " + _subLocality + " " + _thoroughfare + " " + _subThoroughfare,
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Vitro Pride',
+        Tooltip(
+          message: "Ddd",
+
+          child: TextButton(
+            autofocus: true,
+            onPressed: () {
+              Navigator.pushNamed(context, '/map', arguments: {'lat': _latitude, 'lng': _longitude});
+            },
+            child: Text(
+              _currentLoc,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontFamily: 'Vitro Pride',
+              ),
+            ),
           ),
         ),
       ),
