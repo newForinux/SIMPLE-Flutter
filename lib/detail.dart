@@ -65,7 +65,7 @@ class _DetailPageState extends State<DetailPage> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: const <Widget>[
-                  Text('정말 진행하시겠습니까?'),
+                  Text('정말 진행/취소하시겠습니까?'),
                 ],
               ),
             ),
@@ -139,30 +139,7 @@ class _DetailPageState extends State<DetailPage> {
                     ],
                   ),
                   SizedBox(width:MediaQuery.of(context).size.width/4),
-                  Expanded(
-                    child: RaisedButton(
-                      color: Color(0xff3a9ad9),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(' 진행하기 ',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Icon(Icons.arrow_forward, color: Colors.white,),
-                          ],
-                        ),
-                      ),
-                      onPressed: () async {
-                        _showMyDialog();
 
-                      },
-                    ),
-                  ),
                 ],
               ),
               Divider(
@@ -212,6 +189,35 @@ class _DetailPageState extends State<DetailPage> {
                 textAlign: TextAlign.right,
               ),
 
+              Container(
+                // ongoing: false 일때 보여짐, ongoing: true일때 errander한테만 보여짐
+                // 안보이는 경우: ongoing: true && currentUser != errander ?
+                child: (args.data()!['ongoing'] == true && user != args.data()!['errander']) ?
+                 SizedBox(height: 0,) :
+                RaisedButton(
+                  color: Color(0xff3a9ad9),
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+
+                        Text(' 심부름 진행/취소 ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward, color: Colors.white,),
+                      ],
+                    ),
+                  ),
+                  onPressed: () async {
+                    _showMyDialog();
+
+                  },
+                ),
+              ),
+              
               SizedBox(height: 16,),
               Text('댓글'),
               Divider(
