@@ -29,6 +29,31 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as DocumentSnapshot;
+    String comment_serial = randomAlphaNumeric(10);
+
+    List<Row> _buildCommentsBox(BuildContext context, List<DocumentSnapshot> comments) {
+      return comments
+          .map((comment) => Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(comment['commentor']),
+              Text(comment['time'].toString(), style: TextStyle(color: Colors.grey),),
+            ],
+          ),
+          SizedBox(width:12),
+          Expanded(child: Text(comment['comment'], maxLines: 10,)),
+          IconButton(
+            icon: (comment['commentor'] == user!.displayName.toString())? Icon(Icons.delete) : SizedBox(height: 0,),
+            onPressed: () async {
+              await errands.doc(args.data()!['serial_num'])
+                  .collection('comments').doc(comment['comment_serial'].toString()).delete();
+            },
+          ),
+        ],
+      )).toList();
+    }
 
     Future<void> _showMyDialog() async {
       return showDialog<void>(
@@ -244,7 +269,6 @@ class _DetailPageState extends State<DetailPage> {
                           child: IconButton(
                               icon: Icon(Icons.send),
                               onPressed: () async {
-                                String comment_serial = randomAlphaNumeric(10);
                                 await errands.doc(args.data()!['serial_num']).collection('comments').doc(comment_serial).set({
                                   'commentor': user!.displayName,
                                   'comment': _commentController.text,
@@ -266,28 +290,6 @@ class _DetailPageState extends State<DetailPage> {
           ),
         )
     );
-  }
-
-  List<Row> _buildCommentsBox(BuildContext context, List<DocumentSnapshot> comments) {
-    return comments
-        .map((comment) => Row(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(comment['commentor']),
-            Text(comment['time'].toString(), style: TextStyle(color: Colors.grey),),
-          ],
-        ),
-        SizedBox(width:12),
-        Expanded(child: Text(comment['comment'], maxLines: 10,)),
-        IconButton(
-          icon: Icon(Icons.delete),
-          onPressed: () async {
-          },
-        ),
-      ],
-    )).toList();
   }
 
 }
