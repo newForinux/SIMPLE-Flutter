@@ -192,7 +192,7 @@ class _DetailPageState extends State<DetailPage> {
               Container(
                 // ongoing: false 일때 보여짐, ongoing: true일때 errander한테만 보여짐
                 // 안보이는 경우: ongoing: true && currentUser != errander ?
-                child: (args.data()!['ongoing'] == true && user != args.data()!['errander']) ?
+                child: (args.data()!['ongoing'] == true && user!.displayName != args.data()!['errander']) ?
                  SizedBox(height: 0,) :
                 RaisedButton(
                   color: Color(0xff3a9ad9),
