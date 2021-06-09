@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:random_string/random_string.dart';
 
 import 'update.dart';
 import 'package:comment_box/comment/comment.dart';
@@ -28,8 +29,74 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as DocumentSnapshot;
+    String comment_serial = randomAlphaNumeric(10);
 
-    Future<void> _showMyDialog() async {
+    List<Row> _buildCommentsBox(BuildContext context, List<DocumentSnapshot> comments) {
+      return comments
+          .map((comment) => Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(comment['commentor']),
+              Text(comment['time'].toString(), style: TextStyle(color: Colors.grey),),
+            ],
+          ),
+          SizedBox(width:12),
+          Expanded(child: Text(comment['comment'], maxLines: 10,)),
+          IconButton(
+            icon: (comment['commentor'] == user!.displayName.toString())? Icon(Icons.delete) : SizedBox(height: 0,),
+            onPressed: () async {
+              await errands.doc(args.data()!['serial_num'])
+                  .collection('comments').doc(comment['comment_serial'].toString()).delete();
+            },
+          ),
+        ],
+      )).toList();
+    }
+
+    Future<void> _showCompleteDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('심부름 완료'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const <Widget>[
+                  Text('심부름이 마무리되셨나요?'),
+                  Text('(완료된 심부름은 다시 진행할 수 없습니다.)'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('아니요'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('예'),
+                onPressed: () async {
+                  await errands.doc(args.data()!['serial_num']).update({
+                    'done': true,
+                  });
+                  final snackBar = SnackBar(
+                    content: Text('심부름 완료!'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _showProceedDialog() async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -39,13 +106,13 @@ class _DetailPageState extends State<DetailPage> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: const <Widget>[
-                  Text('정말 진행하시겠습니까?'),
+                  Text('정말 진행/취소하시겠습니까?'),
                 ],
               ),
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('아니요'),
+                child: const Text('취소'),
                 onPressed: () async {
                   await errands.doc(args.data()!['serial_num']).update({
                     'ongoing': false,
@@ -55,7 +122,7 @@ class _DetailPageState extends State<DetailPage> {
                 },
               ),
               TextButton(
-                child: const Text('예'),
+                child: const Text('진행'),
                 onPressed: () async {
                   await errands.doc(args.data()!['serial_num']).update({
                     'ongoing': true,
@@ -99,6 +166,33 @@ class _DetailPageState extends State<DetailPage> {
           padding: EdgeInsets.all(16),
           child: ListView(
             children: [
+              (user!.uid == args.data()!['userId'])?
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '완료된 심부름은 완료 버튼을 꼭 눌러주세요!',
+                    style: TextStyle(
+                      color: Colors.pink, fontSize: 12, fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  TextButton(
+                    child: Row(
+                      children: [
+                        Text('완료', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      _showCompleteDialog();
+                    },
+                  )
+                ],
+              ) : SizedBox(height: 0,),
+              SizedBox(height: 8,),
               Row(
                 children: [
                   Image.network(
@@ -113,30 +207,7 @@ class _DetailPageState extends State<DetailPage> {
                     ],
                   ),
                   SizedBox(width:MediaQuery.of(context).size.width/4),
-                  Expanded(
-                    child: RaisedButton(
-                      color: Color(0xff3a9ad9),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 4,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(' 진행하기 ',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Icon(Icons.arrow_forward, color: Colors.white,),
-                          ],
-                        ),
-                      ),
-                      onPressed: () async {
-                        _showMyDialog();
 
-                      },
-                    ),
-                  ),
                 ],
               ),
               Divider(
@@ -186,6 +257,35 @@ class _DetailPageState extends State<DetailPage> {
                 textAlign: TextAlign.right,
               ),
 
+              Container(
+                // ongoing: false 일때 보여짐, ongoing: true일때 errander한테만 보여짐
+                // 안보이는 경우: ongoing: true && currentUser != errander && done: true ?
+                child: ((args.data()!['ongoing'] == true && user!.displayName != args.data()!['errander']) || args.data()!['done'] == true) ?
+                 SizedBox(height: 0,) :
+                RaisedButton(
+                  color: Color(0xff3a9ad9),
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+
+                        Text(' 심부름 진행/취소 ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward, color: Colors.white,),
+                      ],
+                    ),
+                  ),
+                  onPressed: () async {
+                    _showProceedDialog();
+
+                  },
+                ),
+              ),
+              
               SizedBox(height: 16,),
               Text('댓글'),
               Divider(
@@ -243,11 +343,12 @@ class _DetailPageState extends State<DetailPage> {
                           child: IconButton(
                               icon: Icon(Icons.send),
                               onPressed: () async {
-                                await errands.doc(args.data()!['serial_num']).collection('comments').add({
+                                await errands.doc(args.data()!['serial_num']).collection('comments').doc(comment_serial).set({
                                   'commentor': user!.displayName,
                                   'comment': _commentController.text,
                                   'time': DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
                                   'timestamp': DateTime.now(),
+                                  'comment_serial': comment_serial,
                                 });
                                 _commentController.clear();
                               }
@@ -263,24 +364,6 @@ class _DetailPageState extends State<DetailPage> {
           ),
         )
     );
-  }
-
-  List<Row> _buildCommentsBox(BuildContext context, List<DocumentSnapshot> comments) {
-    return comments
-        .map((comment) => Row(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(comment['commentor']),
-            Text(comment['time'].toString(), style: TextStyle(color: Colors.grey),),
-          ],
-        ),
-        SizedBox(width:12),
-        Expanded(child: Text(comment['comment'], maxLines: 10,)),
-
-      ],
-    )).toList();
   }
 
 }
