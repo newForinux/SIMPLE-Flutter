@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
@@ -224,6 +225,9 @@ class _DetailPageState extends State<DetailPage> {
                     fontWeight: FontWeight.bold, fontSize: 20
                 ),
               ),
+              SizedBox(height: 8,),
+              Text(args.data()!['current_address'],
+              style: TextStyle(fontFamily: "Vitro Pride", fontWeight: FontWeight.bold, color: Color(0xff3a9ad9)),),
               SizedBox(height: 8,),
               Text(args.data()!['description'],
                 style: TextStyle(
