@@ -235,7 +235,7 @@ class _DetailPageState extends State<DetailPage> {
                           // onSubmitted: _isComposing? _handleSubmitted : null,
                           focusNode: _focusNode,
                           decoration:
-                          InputDecoration.collapsed(hintText: ' Send a message '),
+                          InputDecoration.collapsed(hintText: ' 댓글을 입력하세요 '),
                         ),
                       ),
                       Container(
