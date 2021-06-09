@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:simple_flutter/home.dart';
 
 
@@ -93,6 +94,28 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
     }
   }
 
+
+  Future<void> _getCurrentAddressWithParams (LatLng pos) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(pos.latitude, pos.longitude, localeIdentifier: "ko_KR");
+      Placemark place = placemarks[0];
+
+      setState(() {
+        _latitude = pos.latitude;
+        _longitude = pos.longitude;
+        _locality = place.locality!;
+        _subLocality = place.subLocality!;
+        _thoroughfare = place.thoroughfare!;
+        _subThoroughfare = place.subThoroughfare!;
+
+        _currentLoc = _locality + " " + _subLocality + " " + _thoroughfare + " " + _subThoroughfare;
+      });
+    } catch(e) {
+      print(e);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,8 +155,9 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
 
           child: TextButton(
             autofocus: true,
-            onPressed: () {
-              Navigator.pushNamed(context, '/map', arguments: {'lat': _latitude, 'lng': _longitude});
+            onPressed: () async {
+              LatLng pos = await Navigator.pushNamed(context, '/map', arguments: {'lat': _latitude, 'lng': _longitude}) as LatLng;
+              _getCurrentAddressWithParams(pos);
             },
             child: Text(
               _currentLoc,
