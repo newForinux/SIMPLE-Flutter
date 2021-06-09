@@ -161,6 +161,41 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
 
+                  (docs['done'] == true)?
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurple,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                Text('완료',
+                                  style: TextStyle(
+                                    color: Colors.white, fontFamily: "RobotoMono",
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            Text("완료된 시간: " + docs['date'],
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey,
+                                )
+                            )
+                          ],
+                        ),
+                      ) :
                   Expanded(
                     //padding: const EdgeInsets.all(8.0),
                     child: (docs['ongoing'] == true)? Column(

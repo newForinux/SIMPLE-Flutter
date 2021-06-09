@@ -125,6 +125,21 @@ class _DetailPageState extends State<DetailPage> {
           padding: EdgeInsets.all(16),
           child: ListView(
             children: [
+              (user!.uid == args.data()!['userId'])?
+              Row(
+                children: [
+                  Text('완료된 심부름은 <완료> 버튼을 꼭 눌러주세요!'),
+                  TextButton(
+                    child: Text('완료'),
+                    onPressed: () async {
+                      await errands.doc(args.data()!['serial_num']).update({
+                        'done': true,
+                      });
+                    },
+                  )
+                ],
+              ) : SizedBox(height: 0,),
+              SizedBox(height: 16,),
               Row(
                 children: [
                   Image.network(
