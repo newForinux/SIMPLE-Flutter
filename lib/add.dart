@@ -111,7 +111,7 @@ class _AddPageState extends State<AddPage> {
             Row(
               children: [
                 Text(
-                  '현재 위치 ',
+                  '플레이스 ',
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
