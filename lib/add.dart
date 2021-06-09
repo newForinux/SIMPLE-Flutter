@@ -51,10 +51,10 @@ class _AddPageState extends State<AddPage> {
           icon: Icon(Icons.cancel),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Add'),
+        title: Text('심부름 추가'),
         actions: [
           TextButton(
-              child: Text('SAVE', style: TextStyle(color: Colors.white)),
+              child: Text('등록', style: TextStyle(color: Colors.white, fontSize: 18)),
               onPressed: () async {
                 if (_titleFormkey.currentState!.validate()) {
 
@@ -71,7 +71,7 @@ class _AddPageState extends State<AddPage> {
                     'category': args.toString(),
                     'title': _titleController.text,
                     'description':_descriptionController.text,
-                    'reward': (_rewardController.text.isEmpty)? 0 : int.tryParse(_rewardController.text),
+                    'reward': (_rewardController.text.isEmpty)? 1000 : int.tryParse(_rewardController.text),
                     'userId': user!.uid,
                     'creator': user!.displayName,
                     'creator_img': user!.photoURL,
@@ -221,15 +221,22 @@ class _AddPageState extends State<AddPage> {
             Form(
               key: _titleFormkey,
               child: TextFormField(
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
                 maxLength: 20,
                 controller: _titleController,
                 decoration: InputDecoration(
-                  hintText: '제목: ',
-                  hintStyle: TextStyle(fontWeight: FontWeight.bold,),
+                  hintText: '제목 ',
+                  hintStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '필수항목입니다';
+                    return '필수 항목입니다';
                   }
                   return null;
                 },

@@ -268,7 +268,7 @@ class _DetailPageState extends State<DetailPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '종료까지  ',
+                    '마감까지  ',
                     style: TextStyle(
                       fontSize: 18,
                       fontFamily: 'Vitro Pride',
