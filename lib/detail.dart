@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:random_string/random_string.dart';
 
 import 'update.dart';
 import 'package:comment_box/comment/comment.dart';
@@ -243,11 +244,13 @@ class _DetailPageState extends State<DetailPage> {
                           child: IconButton(
                               icon: Icon(Icons.send),
                               onPressed: () async {
-                                await errands.doc(args.data()!['serial_num']).collection('comments').add({
+                                String comment_serial = randomAlphaNumeric(10);
+                                await errands.doc(args.data()!['serial_num']).collection('comments').doc(comment_serial).set({
                                   'commentor': user!.displayName,
                                   'comment': _commentController.text,
                                   'time': DateFormat.Hm().format(DateTime.now().add(const Duration(hours: 9))),
                                   'timestamp': DateTime.now(),
+                                  'comment_serial': comment_serial,
                                 });
                                 _commentController.clear();
                               }
@@ -278,7 +281,11 @@ class _DetailPageState extends State<DetailPage> {
         ),
         SizedBox(width:12),
         Expanded(child: Text(comment['comment'], maxLines: 10,)),
-
+        IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () async {
+          },
+        ),
       ],
     )).toList();
   }
