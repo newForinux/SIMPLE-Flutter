@@ -27,7 +27,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as String;
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    final String args = arguments['category'];
+    final String addr = arguments['address'];
 
     CollectionReference errands = FirebaseFirestore.instance
         .collection('errands');
@@ -39,7 +41,7 @@ class _HomePageState extends State<HomePage> {
           Icons.add,
         ),
         onPressed: () {
-          Navigator.pushNamed(context, AddPage.routeName, arguments: args);
+          Navigator.pushNamed(context, AddPage.routeName, arguments: {'category': args, 'address': addr});
         },
         backgroundColor: Colors.lightBlue,
         foregroundColor: Colors.white,

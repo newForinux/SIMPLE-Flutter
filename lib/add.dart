@@ -41,7 +41,9 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments;
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+    final String args = arguments['category'];
+    final String address = arguments['address'];
 
     return Scaffold(
       appBar: AppBar(
@@ -72,6 +74,7 @@ class _AddPageState extends State<AddPage> {
                     'duration': _selectedDuration,
                     'errander': '',
                     'serial_num': serial_num,
+                    'current_address': address,
                   });
                   Navigator.pop(context);
                 } else {
@@ -98,6 +101,25 @@ class _AddPageState extends State<AddPage> {
                 SizedBox(width: 8.0),
                 Text(
                   args.toString(),
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontFamily: 'Vitro Pride',
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  '현재 위치 ',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 8.0),
+                Text(
+                  address,
                   style: TextStyle(
                     fontSize: 20.0,
                     fontFamily: 'Vitro Pride',

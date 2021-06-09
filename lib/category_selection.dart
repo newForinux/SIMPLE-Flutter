@@ -223,7 +223,7 @@ class _CategorySelectionPageState extends State<CategorySelectionPage> {
                 return InkWell(
                   onTap: () {
                     // {'errand': errand, 'loc': _currentLoc}
-                    Navigator.pushNamed(context, HomePage.routeName, arguments: errand);
+                    Navigator.pushNamed(context, HomePage.routeName, arguments: {'category': errand, 'address': _currentLoc});
                   },
                   child: Padding(
                     padding: EdgeInsets.zero,
