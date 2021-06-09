@@ -17,8 +17,6 @@ class _MapPageState extends State<MapPage> {
     zoom: 14.4746,
   );
 
-
-
   @override
   Widget build(BuildContext context) {
     final Map args = ModalRoute.of(context)!.settings.arguments as Map;
