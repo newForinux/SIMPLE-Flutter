@@ -135,13 +135,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    ElevatedButton(
-                        child:Text('anonymous log in'),
-                        onPressed: () async {
-                          signInAnonymously();
-                          await Navigator.pushNamed(context, '/categorySelection');
-                        }
-                    ),
                   ],
                 ),
               ),
