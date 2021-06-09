@@ -24,46 +24,97 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('마이페이지'),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              _signOut();
-            },
-            icon: Icon(Icons.exit_to_app),
-          ),
-        ],
-      ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+        appBar: AppBar(
+          title: Text('마이페이지'),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                _signOut();
+              },
+              icon: Icon(Icons.exit_to_app),
+            ),
+          ],
+        ),
+        body: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
 
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height/10,
-              decoration: BoxDecoration(
-                color: Color(0xff3a9ad9),
-                borderRadius: BorderRadius.circular(4),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height/8,
+                decoration: BoxDecoration(
+                  color: Color(0xff3a9ad9),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AspectRatio(
+                        aspectRatio: 3.0 / 2.0,
+                        child: Image.network(
+                          auth.currentUser!.photoURL.toString(),
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('  ' + auth.currentUser!.displayName.toString(),
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                        SizedBox(height: 16,),
+                        Text('  ' + auth.currentUser!.email.toString(),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ],
+                ),
               ),
+            ),
 
+            Padding(
+              padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('  ' + auth.currentUser!.displayName.toString(),
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                  Text(user!.displayName.toString() + ' 님이 요청한 심부름 ',
+                    style: TextStyle(fontFamily: "Vitro Pride", fontWeight: FontWeight.bold, fontSize: 16),),
+                  SizedBox(height: 8,),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: errands.where('userId', isEqualTo: user!.uid).where('done', isEqualTo: false).snapshots(),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData) {
+                        return Text('현재 ' + snapshot.data!.size.toString() + '개의 심부름을 요청 중입니다.',
+                          style: TextStyle(fontSize: 20, color: Color(0xff3a9ad9)),);
+                      }
+                      return Center(child: CircularProgressIndicator(),);
+                    },
+                  ),
                   SizedBox(height: 16,),
-                  Text('  ' + auth.currentUser!.email.toString(),
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text(user!.displayName.toString() + ' 님이 진행중인 심부름  ',
+                      style: TextStyle(fontFamily: "Vitro Pride", fontWeight: FontWeight.bold, fontSize: 16)),
+                  SizedBox(height: 8,),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: errands.where('errander', isEqualTo: user!.displayName).where('done', isEqualTo: false).snapshots(),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData) {
+                        return Text('현재 ' + snapshot.data!.size.toString() + '개의 심부름을 진행 중입니다.',
+                            style: TextStyle(fontSize: 20, color: Color(0xff3a9ad9)));
+                      }
+                      return Center(child: CircularProgressIndicator(),);
+                    },
+                  ),
                 ],
               ),
             ),
-          ),
 
-        ],
-      )
+          ],
+        )
 
       /*Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -71,7 +122,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: AspectRatio(
-                
+
                 aspectRatio: 5.0 / 2.0,
                 child: Image.network(
                   auth.currentUser!.photoURL.toString(),
