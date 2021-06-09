@@ -55,7 +55,48 @@ class _DetailPageState extends State<DetailPage> {
       )).toList();
     }
 
-    Future<void> _showMyDialog() async {
+    Future<void> _showCompleteDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('심부름 완료'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: const <Widget>[
+                  Text('심부름이 마무리되셨나요?'),
+                  Text('(완료된 심부름은 다시 진행할 수 없습니다.)'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('아니요'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('예'),
+                onPressed: () async {
+                  await errands.doc(args.data()!['serial_num']).update({
+                    'done': true,
+                  });
+                  final snackBar = SnackBar(
+                    content: Text('심부름 완료!'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    Future<void> _showProceedDialog() async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -71,7 +112,7 @@ class _DetailPageState extends State<DetailPage> {
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text('아니요'),
+                child: const Text('취소'),
                 onPressed: () async {
                   await errands.doc(args.data()!['serial_num']).update({
                     'ongoing': false,
@@ -81,7 +122,7 @@ class _DetailPageState extends State<DetailPage> {
                 },
               ),
               TextButton(
-                child: const Text('예'),
+                child: const Text('진행'),
                 onPressed: () async {
                   await errands.doc(args.data()!['serial_num']).update({
                     'ongoing': true,
@@ -127,19 +168,31 @@ class _DetailPageState extends State<DetailPage> {
             children: [
               (user!.uid == args.data()!['userId'])?
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('완료된 심부름은 <완료> 버튼을 꼭 눌러주세요!'),
+                  Text(
+                    '완료된 심부름은 완료 버튼을 꼭 눌러주세요!',
+                    style: TextStyle(
+                      color: Colors.pink, fontSize: 12, fontWeight: FontWeight.bold
+                    ),
+                  ),
                   TextButton(
-                    child: Text('완료'),
-                    onPressed: () async {
-                      await errands.doc(args.data()!['serial_num']).update({
-                        'done': true,
-                      });
+                    child: Row(
+                      children: [
+                        Text('완료', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      _showCompleteDialog();
                     },
                   )
                 ],
               ) : SizedBox(height: 0,),
-              SizedBox(height: 16,),
+              SizedBox(height: 8,),
               Row(
                 children: [
                   Image.network(
@@ -206,8 +259,8 @@ class _DetailPageState extends State<DetailPage> {
 
               Container(
                 // ongoing: false 일때 보여짐, ongoing: true일때 errander한테만 보여짐
-                // 안보이는 경우: ongoing: true && currentUser != errander ?
-                child: (args.data()!['ongoing'] == true && user!.displayName != args.data()!['errander']) ?
+                // 안보이는 경우: ongoing: true && currentUser != errander && done: true ?
+                child: ((args.data()!['ongoing'] == true && user!.displayName != args.data()!['errander']) || args.data()!['done'] == true) ?
                  SizedBox(height: 0,) :
                 RaisedButton(
                   color: Color(0xff3a9ad9),
@@ -227,7 +280,7 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                   onPressed: () async {
-                    _showMyDialog();
+                    _showProceedDialog();
 
                   },
                 ),
