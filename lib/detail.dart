@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
+import 'package:slide_countdown_clock/slide_countdown_clock.dart';
 
 import 'update.dart';
 import 'package:comment_box/comment/comment.dart';
@@ -16,20 +19,23 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
 
+  bool _isComposing = false;
   var user = FirebaseAuth.instance.currentUser;
   CollectionReference errands = FirebaseFirestore.instance.collection('errands');
   String userImg = 'https://www.clipartkey.com/mpngs/m/152-1520367_user-profile-default-image-png-clipart-png-download.png';
 
   final _commentController = TextEditingController();
-  bool _isComposing = false;
-
   final FocusNode _focusNode = FocusNode();
+
 
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as DocumentSnapshot;
     String comment_serial = randomAlphaNumeric(10);
+
+    DateTime deadline = args.data()!['deadline'].toDate();
+    Duration remaining = deadline.difference(DateTime.now());
 
     List<Row> _buildCommentsBox(BuildContext context, List<DocumentSnapshot> comments) {
       return comments
@@ -106,7 +112,7 @@ class _DetailPageState extends State<DetailPage> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: const <Widget>[
-                  Text('정말 진행/취소하시겠습니까?'),
+                  Text('정말 진행/취소 하시겠습니까?'),
                 ],
               ),
             ),
@@ -143,7 +149,7 @@ class _DetailPageState extends State<DetailPage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Detail'),
+          title: Text('심부름'),
           actions: [
             (user!.uid == args.data()!['userId']) ?
             IconButton(
@@ -257,6 +263,40 @@ class _DetailPageState extends State<DetailPage> {
                 textAlign: TextAlign.right,
               ),
 
+              SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '종료까지  ',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Vitro Pride',
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  SlideCountdownClock(
+                    duration: remaining,
+                    slideDirection: SlideDirection.Down,
+                    separator: ' : ',
+                    textStyle: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Cafe24 surround',
+                      color: Color(0xff3a9ad9),
+                    ),
+                  ),
+                  Text(
+                    '  남았어요!',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Vitro Pride',
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+
               Container(
                 // ongoing: false 일때 보여짐, ongoing: true일때 errander한테만 보여짐
                 // 안보이는 경우: ongoing: true && currentUser != errander && done: true ?
@@ -292,29 +332,7 @@ class _DetailPageState extends State<DetailPage> {
                 thickness: 2,
               ),
 
-
-              // Text(args.data()!['creator'] + args.data()!['comment']),
-              StreamBuilder<QuerySnapshot>(
-                stream: errands.doc(args.data()!['serial_num'])
-                    .collection('comments').orderBy('timestamp', descending: false).snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  List<DocumentSnapshot> comments = snapshot.data!.docs;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _buildCommentsBox(context, comments),
-                  ); //: SizedBox(height: 0);
-                },
-
-              ),
-
-
-
-              SizedBox(height: 16,),
+              SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
                   color: HexColor("#d3d3d3"),
@@ -359,7 +377,25 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                 ),
               ),
+              SizedBox(height: 20),
+              // Text(args.data()!['creator'] + args.data()!['comment']),
+              StreamBuilder<QuerySnapshot>(
+                stream: errands.doc(args.data()!['serial_num'])
+                    .collection('comments').orderBy('timestamp', descending: false).snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  List<DocumentSnapshot> comments = snapshot.data!.docs;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildCommentsBox(context, comments),
+                  ); //: SizedBox(height: 0);
+                },
 
+              ),
             ],
           ),
         )

@@ -57,6 +57,16 @@ class _AddPageState extends State<AddPage> {
               child: Text('SAVE', style: TextStyle(color: Colors.white)),
               onPressed: () async {
                 if (_titleFormkey.currentState!.validate()) {
+
+                  DateTime deadline = DateTime.now();
+
+                  switch(_selectedDuration) {
+                    case '1일(24시간)': deadline = DateTime.now().add(Duration(days: 1)); break;
+                    case '2일(48시간)': deadline = DateTime.now().add(Duration(days: 2)); break;
+                    case '3일(72시간)': deadline = DateTime.now().add(Duration(days: 3)); break;
+                    case '일주일': deadline = DateTime.now().add(Duration(days: 7)); break;
+                  }
+
                   await errands.doc(serial_num).set({
                     'category': args.toString(),
                     'title': _titleController.text,
@@ -75,6 +85,7 @@ class _AddPageState extends State<AddPage> {
                     'errander': '',
                     'serial_num': serial_num,
                     'current_address': address,
+                    'deadline': deadline,
                   });
                   Navigator.pop(context);
                 } else {

@@ -39,6 +39,7 @@ dependencies:
   comment_box: ^0.0.16
   hexcolor: ^2.0.4
   google_maps_flutter: ^2.0.6
+  slide_countdown_clock: ^1.0.3
 
 
   # The following adds the Cupertino Icons font to your application.
